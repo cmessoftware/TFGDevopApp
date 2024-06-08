@@ -1,0 +1,102 @@
+﻿@page "/code/repositories"
+@using Radzen.Blazor
+@using TFGDevopsApp.Interfaces
+@using Radzen
+@using TFGDevopsApp.Core.Models.Plastic
+@inject IPlasticServices plasticServices
+@inject NavigationManager NavigationManager
+
+<style>
+    .rz-grid-table {
+        width: unset;
+    }
+</style>
+
+<Header Title="Repositorios">
+    <div class="rz-grid-table mb-10"></div>
+</Header>
+
+<ErrorBoundary>
+    <RadzenDataGrid @ref="grid" AllowFiltering="true" AllowColumnResize="true"
+                    FilterMode="FilterMode.Advanced" PageSize="5" AllowPaging="true" AllowSorting="true"
+                    Data="@repositories"
+                    TItem="RepositoryResponseDto" ColumnWidth="300px"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterCleared=@FilterCleared
+                    LogicalFilterOperator="LogicalFilterOperator.Or" FilterPopupRenderMode="PopupRenderMode.OnDemand">
+        <Columns>
+            <RadzenDataGridColumn TItem="RepositoryResponseDto" Property="guid" Title="Guid" />
+            <RadzenDataGridColumn TItem="RepositoryResponseDto" Property="name" Title="Nombre" />
+            <RadzenDataGridColumn TItem="RepositoryResponseDto" Property="creationDate" Title="Fecha Creación" />
+            <RadzenDataGridColumn TItem="RepositoryResponseDto" Property="owner.name" Title="Usuario" />
+            <RadzenDataGridColumn TItem="RepositoryResponseDto" Title="Acciones">
+                <Template Context="repo">
+                    <RadzenButton Click="@(() => NavigateTo(repo.name))"
+                                  Icon="edit"
+                                  ButtonStyle="ButtonStyle.Light"
+                                  Variant="Radzen.Variant.Filled"
+                                  Size="ButtonSize.Medium"
+                                  Style="width:auto"
+                                >
+                        <span title="Repositorio @repo.name">Ir</span>
+                    </RadzenButton>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</ErrorBoundary>
+
+@code {
+
+ 
+    RadzenDataGrid<RepositoryResponseDto> grid;
+    List<RepositoryResponseDto> repositories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var repository = await plasticServices.GetRepositoriesAsync("api/v1/repos");
+        repositories = repository.Data;
+    }
+
+  
+    public void NavigateTo(string repoName)
+    {
+        var url = $"code/repository/{repoName}";
+        NavigationManager.NavigateTo(url);
+    }
+
+    IEnumerable<string> selectedTitles;
+
+    async Task OnSelectedTitlesChange(object value)
+    {
+        if (selectedTitles != null && !selectedTitles.Any())
+        {
+            selectedTitles = null;
+        }
+
+        await grid.FirstPage();
+    }
+
+    IEnumerable<string> selectedSecondTitles;
+
+    public Repositories()
+    {
+    }
+
+    async Task OnSelectedSecondTitlesChange(object value)
+    {
+        if (selectedSecondTitles != null && !selectedSecondTitles.Any())
+        {
+            selectedSecondTitles = null;
+        }
+
+        await grid.FirstPage();
+    }
+
+    async Task FilterCleared()
+    {
+        selectedTitles = null;
+        selectedSecondTitles = null;
+        await grid.FirstPage();
+    }
+}

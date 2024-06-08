@@ -1,0 +1,96 @@
+﻿@page "/task/Tasks"
+@using Radzen
+@using Radzen.Blazor
+@using TFGDevopsApp.Interfaces
+@using TFGDevopsApp.Models.Mantis
+@using TFGDevopsApp.Core.Helpers
+@using TFGDevopsApp.Core.Models.Plastic
+@inject IMantisServices mantisServices
+@inject NavigationManager NavigationManager
+
+<style>
+    .rz-grid-table {
+        width: unset;
+    }
+</style>
+
+<Header Title="Task">
+    <div class="rz-grid-table mb-10"></div>
+</Header>
+
+<ErrorBoundary>
+    <RadzenDataGrid @ref="grid" AllowFiltering="true" AllowColumnResize="true"
+                    FilterMode="FilterMode.Advanced" PageSize="5" AllowPaging="true" AllowSorting="true" 
+                    Data="@tasks" 
+                    TItem="Issue" ColumnWidth="300px"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterCleared=@FilterCleared
+                    LogicalFilterOperator="LogicalFilterOperator.Or" FilterPopupRenderMode="PopupRenderMode.OnDemand">
+        <Columns>
+            <RadzenDataGridColumn TItem="Issue" Property="Id" Title="Id" />
+            <RadzenDataGridColumn TItem="Issue" Property="Summary" Title="Resumen" />
+            <RadzenDataGridColumn TItem="Issue" Property="Project.Name" Title="Project Name" />
+            <RadzenDataGridColumn TItem="Issue" Title="Acciones">
+                <Template Context="mantisTask">
+                    <RadzenButton Click="@(() => NavigateToRepositories(mantisTask.Id.ToString()))"
+                                  Icon="edit"
+                                  ButtonStyle="ButtonStyle.Light"
+                                  Variant="Radzen.Variant.Filled"
+                                  Size="ButtonSize.Medium"
+                                  Style="width:auto">
+                        Tareas 
+                    </RadzenButton>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</ErrorBoundary>
+
+@code {
+    [Parameter]
+    public int TasId { get; set; }
+
+    RadzenDataGrid<Issue> grid;
+    List<Issue> tasks;
+    IEnumerable<string> selectedTitles;
+    IEnumerable<string> selectedSecondTitles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var task = await mantisServices.GetTasks("issues");
+        tasks = task.Data.Issues;
+    }
+
+    private void NavigateToRepositories(string taskId)
+    {
+        NavigationManager.NavigateTo($"/task/TaskDetails/{taskId}");
+    }
+
+
+    async Task OnSelectedTitlesChange(object value)
+    {
+        if (selectedTitles != null && !selectedTitles.Any())
+        {
+            selectedTitles = null;
+        }
+
+        await grid.FirstPage();
+    }
+
+    async Task OnSelectedSecondTitlesChange(object value)
+    {
+        if (selectedSecondTitles != null && !selectedSecondTitles.Any())
+        {
+            selectedSecondTitles = null;
+        }
+
+        await grid.FirstPage();
+    }
+
+    async Task FilterCleared()
+    {
+        selectedTitles = null;
+        selectedSecondTitles = null;
+        await grid.FirstPage();
+    }
+}

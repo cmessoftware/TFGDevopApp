@@ -1,0 +1,13 @@
+﻿@page "/home"
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject NavigationManager NavigationManager
+
+@code {
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+       NavigationManager.NavigateTo("/");
+    }
+}

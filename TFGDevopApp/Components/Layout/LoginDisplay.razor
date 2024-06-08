@@ -1,0 +1,14 @@
+﻿@using Radzen.Blazor
+<AuthorizeView>
+    <Authorized>
+        <RadzenMenu>
+            <NavLink class="nav-link" Icon="power_settings_new" href="Account/Logout" Match="NavLinkMatch.All">Logout</NavLink>
+        </RadzenMenu>
+    </Authorized>
+    <NotAuthorized>
+        <RadzenMenu>
+            <RadzenPanelMenuItem Text="Login" Icon="face" Path="Account/Login" />
+            <RadzenPanelMenuItem Text="Register" Icon="home" Path="Account/Register?returnUrl=/" />
+        </RadzenMenu>      
+    </NotAuthorized>
+</AuthorizeView>

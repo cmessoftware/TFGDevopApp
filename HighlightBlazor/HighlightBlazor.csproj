@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <Authors>Guyiming</Authors>
+    <Description>代码高亮组件，基于highlight.js封装而成，支持c# java json xml python等180多种语言。
+Syntax highlighting for Blazor, based on highlight.js. Supports c#, java, json, xml, python and more than 180 languages.</Description>
+    <Copyright>Guyiming</Copyright>
+    <PackageProjectUrl>https://github.com/Guyiming/Highlight.Blazor</PackageProjectUrl>
+    <PackageIcon>highlight.png</PackageIcon>
+    <RepositoryUrl>https://github.com/Guyiming/Highlight.Blazor</RepositoryUrl>
+    <PackageTags>highlight, blazor, highlight.js, c#, java, json, xml, python</PackageTags>
+    <Version>0.1.10</Version>
+    <PackageReleaseNotes>based on highlight.js 13.3.1</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\highlight.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.1.19" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.19" />
+  </ItemGroup>
+
+</Project>

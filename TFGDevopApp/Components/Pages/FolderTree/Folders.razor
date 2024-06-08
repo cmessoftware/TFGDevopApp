@@ -1,0 +1,26 @@
+﻿@page "/foldertree/folders/{RepoName}"
+
+@using TFGDevopsApp.Components.Pages.Folder
+
+<Header Title="Repositorio">
+    <div class="rz-grid-table mb-10"></div>"
+</Header>
+
+
+<div class="folder-tree-wrapper">
+    <ul class="folder-tree">
+        <FolderItem  RepoName="@RepoName" />
+    </ul>
+</div>
+
+@code {
+   
+    [Parameter]
+    public string RepoName { get; set; }
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+            await base.OnInitializedAsync();
+    }
+}
