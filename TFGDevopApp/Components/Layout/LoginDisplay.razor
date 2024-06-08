@@ -6,9 +6,13 @@
         </RadzenMenu>
     </Authorized>
     <NotAuthorized>
-        <RadzenMenu>
-            <RadzenPanelMenuItem Text="Login" Icon="face" Path="Account/Login" />
-            <RadzenPanelMenuItem Text="Register" Icon="home" Path="Account/Register?returnUrl=/" />
-        </RadzenMenu>      
+        <div class="row">
+            <div class="col-6">
+                <NavLink class="nav-link font-monospace" href="Account/Login" Match="NavLinkMatch.All">Login</NavLink>
+            </div>
+            <div class="col-6">
+                <NavLink class="nav-link font-monospace" href="Account/Register" Match="NavLinkMatch.All">Register</NavLink>
+            </div>
+        </div>
     </NotAuthorized>
 </AuthorizeView>
