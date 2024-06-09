@@ -1,8 +1,9 @@
 ﻿@page "/code/repositories"
 @using Radzen.Blazor
+@using TFGDevopsApp.Dtos.Plastic.Repositories
 @using TFGDevopsApp.Interfaces
 @using Radzen
-@using TFGDevopsApp.Core.Models.Plastic
+@using TFGDevopsApp.Core.Models.Plastic;
 @inject IPlasticServices plasticServices
 @inject NavigationManager NavigationManager
 
@@ -17,6 +18,14 @@
 </Header>
 
 <ErrorBoundary>
+    <RadzenText Style="font-family:monospace; font-size:xx-large" Text="Repositorios"/>
+    <RadzenStack Style="mb-10">
+        <RadzenButton Icon="add"
+                      Text="Nuevo Repositorio"
+                      Click="@(() => NavigationManager.NavigateTo("/code/createRepository"))"
+                      ButtonStyle="ButtonStyle.Primary"
+                      Variant="Radzen.Variant.Filled" Size="ButtonSize.Medium" Style="width:auto" />
+    </RadzenStack>
     <RadzenDataGrid @ref="grid" AllowFiltering="true" AllowColumnResize="true"
                     FilterMode="FilterMode.Advanced" PageSize="5" AllowPaging="true" AllowSorting="true"
                     Data="@repositories"
@@ -24,21 +33,16 @@
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterCleared=@FilterCleared
                     LogicalFilterOperator="LogicalFilterOperator.Or" FilterPopupRenderMode="PopupRenderMode.OnDemand">
         <Columns>
-            <RadzenDataGridColumn TItem="RepositoryResponseDto" Property="guid" Title="Guid" />
             <RadzenDataGridColumn TItem="RepositoryResponseDto" Property="name" Title="Nombre" />
             <RadzenDataGridColumn TItem="RepositoryResponseDto" Property="creationDate" Title="Fecha Creación" />
             <RadzenDataGridColumn TItem="RepositoryResponseDto" Property="owner.name" Title="Usuario" />
             <RadzenDataGridColumn TItem="RepositoryResponseDto" Title="Acciones">
                 <Template Context="repo">
-                    <RadzenButton Click="@(() => NavigateTo(repo.name))"
-                                  Icon="edit"
-                                  ButtonStyle="ButtonStyle.Light"
-                                  Variant="Radzen.Variant.Filled"
-                                  Size="ButtonSize.Medium"
-                                  Style="width:auto"
-                                >
-                        <span title="Repositorio @repo.name">Ir</span>
-                    </RadzenButton>
+                    <div>
+                        <a class="custom-button" href="code/repository/@repo.name">
+                            <i class="bi bi-code"></i> Ver repo
+                        </a>
+                    </div>
                 </Template>
             </RadzenDataGridColumn>
         </Columns>

@@ -1,6 +1,7 @@
-﻿using TFGDevopsApp.Infraestructure.Entity.Plastic;
+﻿using TFGDevopsApp.Dtos.Plastic.Repositories;
+using TFGDevopsApp.Infraestructure.Entity.Plastic;
 
-namespace TFGDevopsApp.Core.Models.Plastic
+namespace TFGDevopsApp.Dtos.Plastic.ChangeSets
 {
     public class ChangeSetResponseDto
     {

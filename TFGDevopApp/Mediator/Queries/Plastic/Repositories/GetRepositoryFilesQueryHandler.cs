@@ -1,14 +1,14 @@
 ﻿using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Common.Helpers;
-using TFGDevopsApp.Models.Plastic;
 using MediatR;
 using AutoMapper;
-using TFGDevopsApp.Components.Pages.Folder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using TFGDevopsApp.Dtos.Plastic.Repositories;
+using TFGDevopsApp.Dtos.FolderTree;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
 {

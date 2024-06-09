@@ -1,7 +1,7 @@
-﻿using TFGDevopsApp.Core.Models.Plastic;
-using TFGDevopsApp.Core.Models.Result;
+﻿using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Common.Helpers;
 using MediatR;
+using TFGDevopsApp.Dtos.Plastic.ChangeSets;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.ChangeSets
 {

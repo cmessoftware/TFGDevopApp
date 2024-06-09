@@ -1,4 +1,4 @@
-﻿using TFGDevopsApp.Components.Pages.Folder;
+﻿using TFGDevopsApp.Dtos.FolderTree;
 
 namespace TFGDevopsApp.Interfaces
 {

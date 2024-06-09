@@ -1,11 +1,11 @@
-﻿using TFGDevopsApp.Core.Models.Plastic;
-using TFGDevopsApp.Core.Models.Result;
+﻿using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Common.Helpers;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
+using TFGDevopsApp.Dtos.Plastic.Repositories;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
 {

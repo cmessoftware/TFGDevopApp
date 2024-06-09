@@ -1,24 +1,23 @@
 ﻿@page "/foldertree/folderitem/{RepoName}"
-@using AutoMapper
 @using BlazorMonaco.Editor
-@using Microsoft.Extensions.Logging
 @using Radzen
+@using AutoMapper
+@using Microsoft.Extensions.Logging
 @using TFGDevopsApp.Common
+@using TFGDevopsApp.Components.Pages.Code
+@using TFGDevopsApp.Core.Models.Result
+@using TFGDevopsApp.Dtos.Plastic.Repositories
+@using TFGDevopsApp.Dtos.Plastic.Workspaces
 @using TFGDevopsApp.Interfaces
-@using TFGDevopsApp.Components.Pages.Folder
 @using TFGDevopsApp.Core.Models.Plastic
 @using System.Linq
+@using TFGDevopsApp.Dtos.FolderTree
 @inject IPlasticServices plasticServices
 @inject IConfiguration configuration
 @inject IMapper _mapper
 @inject ILogger<FolderItem> _logger
 @using Radzen.Blazor
 
-<Header Title="Repositorio">
-    <div class="rz-grid-table mb-10">
-        @RepoName
-    </div>
-</Header>
 
 <div class="container">
     <div class="row">
@@ -28,13 +27,12 @@
                 <RadzenTree Data="@FolderTrees"
                             TextProperty="FolderTree.Name"
                             ChildItemsProperty="FolderTree.Children"
-                            LoadData="@LoadDataAsync"
-                            Expand="@LoadDataAsync"
-                            Change="@OnNodeSelected">
+                            Expand=@LoadDataAsync
+                            Change=@OnNodeChange>
                     <RadzenTreeItem Text="@RepoName">
                         @foreach (var repo in FolderTrees)
                         {
-                            <RadzenTreeItem Text="@repo.Name" Expand="@LoadDataAsync">
+                            <RadzenTreeItem Text="@repo.Name" Expand=@LoadDataAsync>
                                 @* Recursive function to display the folder tree *@
                                 @BuildTreeView(repo)
                             </RadzenTreeItem>
@@ -46,11 +44,11 @@
         </div>
         <div class="col-6">
             <div class="rz-grid-table-cell">
-                @* <RadzenPanel> *@
+                <RadzenPanel>
                    <div class="row">
                         <div class="col-6">
                             <RadzenText>
-                                <h3>Nombre del Archivo @CodeFileName</h3>
+                                <h4>@CodeFileName</h4>
                             </RadzenText>
                         </div>
                         <div class="col-6">
@@ -73,7 +71,7 @@
                             }
                         </div>
                     </div>
-                @* </RadzenPanel> *@
+                </RadzenPanel>
             </div>
         </div>
     </div>
@@ -110,11 +108,8 @@
         FolderTrees = data.Data.Children;
         CurrentPath = path;
 
-        //LoadDataAsync(new TreeExpandEventArgs() { Value = FolderTrees });
+        await LoadDataAsync(new TreeExpandEventArgs() { Value = FolderTrees });
         //LoadSubTrees(FolderTrees, null);
-
-
-
     }
 
     private void SolicitarRevision()
@@ -185,11 +180,12 @@
 
     private async Task LoadDataAsync(TreeExpandEventArgs args)
     {
-        var item = args.Value as FolderTree;
-        if (item != null)
+        var items = args.Value as List<FolderTree>;
+
+        foreach(var item in items)
         {
             // Perform the necessary action when the tree item is expanded
-            if (item.Children == null ||  item.Children.Count == 0)
+            if ( item == null ||  item.Children.Count == 0)
             {
                 item.Children = await LoadChildrenAsync(item); 
             }
@@ -273,18 +269,22 @@
 
     private async Task<List<FolderTree>> LoadChildrenAsync(FolderTree item)
     {
-        var pathPlasticService = configuration.GetValue<string>(Constants.PlasticBaseUrlKey);
-        var basePath = $"{pathPlasticService}api/v1/repos/{RepoName}";
-        var fileBasePath = $"{basePath}/branches/main/contents";
-        string path;
-        if(!item.Path.Contains(RepoName))
-            path = $"{fileBasePath}{item.Path}";
-        else
-            path = $"{fileBasePath}";
+        ResultMessage<FolderTree> folderTree = new ResultMessage<FolderTree>();
 
-        var folderTree = await plasticServices.GetFolderTreeAsync(path);
-        IsFile = folderTree.Data.Type == "file";
-        return await Task.FromResult(folderTree.Data.Children);
+        if (item != null)
+        {
+            var pathPlasticService = configuration.GetValue<string>(Constants.PlasticBaseUrlKey);
+            var basePath = $"{pathPlasticService}api/v1/repos/{RepoName}";
+            var fileBasePath = $"{basePath}/branches/main/contents";
+            string path = $"{fileBasePath}{item.Path}";
+
+            folderTree = await plasticServices.GetFolderTreeAsync(path);
+            IsFile = folderTree.Data.Type == "file";
+        }
+        else
+            folderTree =  await Task.FromResult(folderTree);
+
+        return folderTree?.Data.Children;
     }
   
     private class RepositoryWorkspace

@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using TFGDevopsApp.Components.Pages.Folder;
 using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dtos.FolderTree;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
 {

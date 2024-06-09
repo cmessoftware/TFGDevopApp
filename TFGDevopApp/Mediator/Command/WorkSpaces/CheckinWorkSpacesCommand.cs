@@ -6,7 +6,7 @@ using MediatR;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace TFGDevopsApp.Services.Contributor.Command.SCM.WorkSpaces
+namespace TFGDevopsApp.Mediator.Command.WorkSpaces
 {
     public class CheckinWorkSpacesCommand : IRequest<ResultMessage<string>>
     {

@@ -1,5 +1,4 @@
-﻿using TFGDevopsApp.Core.Models.Plastic;
-using TFGDevopsApp.Core.Models.Result;
+﻿using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Common;
 using TFGDevopsApp.Common.Helpers;
 using MediatR;
@@ -7,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
+using TFGDevopsApp.Dtos.Plastic.Workspaces;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.WorkSpaces
 {
