@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TFGDevopsApp.Components.Pages.Folder
+namespace TFGDevopsApp.Dtos.FolderTree
 {
     public class FolderTree
     {
@@ -16,7 +16,7 @@ namespace TFGDevopsApp.Components.Pages.Folder
 
         public string Content { get; set; }
 
-        public string? Description { get; set; }
+        public string Description { get; set; }
         public int? RevisionId { get; set; }
         public bool IsExpanded { get; set; }
         public FolderTree ParentTree { get; set; }

@@ -14,18 +14,14 @@
         <AuthorizeView>
             <Authorized>
                 <RadzenPanelMenu>
-                    <RadzenPanelMenuItem Text="Code" Icon="code" Path="">
-                        <RadzenPanelMenuItem Text="Workspaces" Path="code/workspaces" />
-                    </RadzenPanelMenuItem>
-                    <RadzenPanelMenuItem Text="Tasks" Icon="task" Path="">
-                        <RadzenPanelMenuItem Text="Task" Path="task/Tasks" />
-                    </RadzenPanelMenuItem>
+                    <RadzenPanelMenuItem Icon="dashboard" Text="Workspaces" Path="code/workspaces" />
+                    <RadzenPanelMenuItem Icon="task" Text="Tasks" Path="task/Tasks" />
                 </RadzenPanelMenu>
             </Authorized>
             <NotAuthorized>
                 <RadzenPanelMenu>
                     <RadzenPanelMenuItem Text="Login" Icon="account_circle" Path="Account/Login" />
-                    <RadzenPanelMenuItem Text="Register" Icon="home" Path="Account/Register?returnUrl=/" />
+                <RadzenPanelMenuItem Text="Register" Icon="account_balance_wallet" Path="Account/Register?returnUrl=/" />
                 </RadzenPanelMenu>
             </NotAuthorized>
         </AuthorizeView>

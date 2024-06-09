@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using TFGDevopsApp.Components.Pages.Folder;
-using TFGDevopsApp.Models.Plastic;
+using TFGDevopsApp.Dtos.FolderTree;
+using TFGDevopsApp.Dtos.Plastic.Repositories;
 
 namespace TFGDevopsApp.Common.Mapper
 {

@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using TFGDevopsApp.Core.Models.Plastic;
 using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dtos.Plastic.Workspaces;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.WorkSpaces
 {

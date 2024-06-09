@@ -2,7 +2,15 @@
 <AuthorizeView>
     <Authorized>
         <RadzenMenu>
-            <NavLink class="nav-link" Icon="power_settings_new" href="Account/Logout" Match="NavLinkMatch.All">Logout</NavLink>
+            <RadzenRow Style="width: 1000px; display: flex; align-items:center;">
+                <RadzenColumn Size="3" Style="display: flex; align-items: center;">
+                    <NavLink class="nav-link" Icon="power_settings_new" href="Account/Logout" Match="NavLinkMatch.All">Logout</NavLink>
+                </RadzenColumn>
+                <RadzenColumn Size="3" />
+                <RadzenColumn Size="6" Style="display: flex; align-items: center;">
+                        @context?.User?.Identity?.Name
+                </RadzenColumn>
+            </RadzenRow>
         </RadzenMenu>
     </Authorized>
     <NotAuthorized>

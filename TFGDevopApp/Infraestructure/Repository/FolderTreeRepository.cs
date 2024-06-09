@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using TFGDevopsApp.Components.Pages.Folder;
+using TFGDevopsApp.Dtos.FolderTree;
 using TFGDevopsApp.Interfaces;
 
 namespace TFGDevopsApp.Infraestructure.Repository

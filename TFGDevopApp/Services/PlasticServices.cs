@@ -1,12 +1,17 @@
-﻿using TFGDevopsApp.Core.Models.Plastic;
-using TFGDevopsApp.Core.Models.Result;
+﻿using MediatR;
 using TFGDevopsApp.Common.Helpers;
-using TFGDevopsApp.Interfaces;
+using TFGDevopsApp.Core.Models.Plastic;
+using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dtos.FolderTree;
+using TFGDevopsApp.Dtos.Plastic.ChangeSets;
+using TFGDevopsApp.Dtos.Plastic.Repositories;
+using TFGDevopsApp.Dtos.Plastic.Workspaces;
+using TFGDevopsApp.Infraestructure.Entity.Plastic;
+using TFGDevopsApp.Mediator.Command.Repositories;
+using TFGDevopsApp.Mediator.Command.WorkSpaces;
 using TFGDevopsApp.Mediator.Queries.Plastic.ChangeSets;
 using TFGDevopsApp.Mediator.Queries.Plastic.Repositories;
 using TFGDevopsApp.Mediator.Queries.Plastic.WorkSpaces;
-using MediatR;
-using TFGDevopsApp.Components.Pages.Folder;
 
 namespace TFGDevopsApp.Services
 {
@@ -17,6 +22,36 @@ namespace TFGDevopsApp.Services
         public PlasticServices(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        public async Task<ResultMessage<bool>> CreateRepositoryAsync(CreateRepositoryResponseDto repository)
+        {
+            var query = new CreateRepositoryCommand(repository);
+            var result = await _mediator.Send(query);
+
+            if (result != null)
+            {
+                return await Task.FromResult(result);
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        public async Task<ResultMessage<bool>> CreateWorkSpaceAsync(WorkspaceRequestDto workspace)
+        {
+            var query = new CreateWorkSpacesCommand(workspace);
+            var result = await _mediator.Send(query);
+
+            if (result != null)
+            {
+                return await Task.FromResult(result);
+            }
+            else
+            {
+                return result;
+            }
         }
 
         public async Task<ResultMessage<List<ChangeSetResponseDto>>> GetChangeSetsAsync(string path)

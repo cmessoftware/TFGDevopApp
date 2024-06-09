@@ -1,8 +1,9 @@
 ﻿@page "/code/workspaces"
 @using Radzen
 @using Radzen.Blazor
+@using TFGDevopsApp.Dtos.Plastic.Workspaces
 @using TFGDevopsApp.Interfaces
-@using TFGDevopsApp.Core.Models.Plastic
+@using TFGDevopsApp.Core.Models.Plastic;
 @inject IPlasticServices plasticServices
 @inject NavigationManager NavigationManager
 
@@ -17,6 +18,14 @@
 </Header>
 
 <ErrorBoundary>
+    <RadzenText Style="font-family:monospace; font-size:xx-large" Text="Workspaces" />
+    <RadzenStack Style="mb-10">
+        <RadzenButton Icon="add" 
+                      Text="Nuevo Workspace" 
+                      Click="@(() => NavigationManager.NavigateTo("/code/createWorkspace"))"
+                      ButtonStyle="ButtonStyle.Primary" 
+                      Variant="Radzen.Variant.Filled" Size="ButtonSize.Medium" Style="width:auto" />
+    </RadzenStack>
     <RadzenDataGrid @ref="grid" AllowFiltering="true" AllowColumnResize="true"
                     FilterMode="FilterMode.Advanced" PageSize="5" AllowPaging="true" AllowSorting="true" 
                     Data="@workspaces" 
@@ -24,18 +33,29 @@
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterCleared=@FilterCleared
                     LogicalFilterOperator="LogicalFilterOperator.Or" FilterPopupRenderMode="PopupRenderMode.OnDemand">
         <Columns>
-            <RadzenDataGridColumn TItem="WorkspaceResponseDto" Property="Guid" Title="Guid" />
             <RadzenDataGridColumn TItem="WorkspaceResponseDto" Property="Name" Title="Nombre" />
             <RadzenDataGridColumn TItem="WorkspaceResponseDto" Property="MachineName" Title="Servidor" />
             <RadzenDataGridColumn TItem="WorkspaceResponseDto" Title="Acciones">
                 <Template Context="workSpaces">
-                    <RadzenButton Click="@(() => NavigateTo())"
-                                  Icon="dashboard"
+                    <div class="row">
+                        <div class="col-4">
+                            <a class="custom-button" title="Borrar Workspace" href="code/deleteWorkspaces">
+                                <i class="bi bi-code"></i> Borrar
+                            </a>
+                        </div>
+                        <div class="col-4">
+                            <a class="custom-button" title="Ver repositorios" href="code/repositories">
+                                <i class="bi bi-code"></i> Ver repos
+                            </a>
+                        </div>
+                    </div>
+                   @*  <RadzenButton Click=@NavigateTo
+                                  Icon="code"
                                   ButtonStyle="ButtonStyle.Light"
                                   Variant="Radzen.Variant.Filled"
                                   Size="ButtonSize.Medium"
                                   Style="width:auto">
-                    </RadzenButton>
+                    </RadzenButton>  *@
                 </Template>
             </RadzenDataGridColumn>
         </Columns>
@@ -56,7 +76,8 @@
         workspaces = workspace.Data;
     }
 
-    private void NavigateTo()
+    
+    public void NavigateTo()
     {
          NavigationManager.NavigateTo($"/code/repositories");
     }
