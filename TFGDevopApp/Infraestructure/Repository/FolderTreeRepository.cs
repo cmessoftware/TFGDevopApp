@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using TFGDevopsApp.Dtos.FolderTree;
-using TFGDevopsApp.Interfaces;
+﻿using System.IO;
 
 namespace TFGDevopsApp.Infraestructure.Repository
 {
@@ -45,7 +41,7 @@ namespace TFGDevopsApp.Infraestructure.Repository
             }
             catch (Exception ex)
             {
-                throw  new IOException(ex.Message);
+                throw new IOException(ex.Message);
             }
         }
 

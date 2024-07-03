@@ -3,7 +3,6 @@
 @using TFGDevopsApp.Interfaces
 @using TFGDevopsApp.Models.Mantis
 @using TFGDevopsApp.Core.Helpers
-@using TFGDevopsApp.Core.Models.Plastic
 @using Radzen
 @using Radzen.Blazor
 @using TFGDevopsApp.Core.Models.Result
@@ -11,12 +10,12 @@
 @inject NavigationManager NavigationManager
 
 
-<Header>
+<AntDesign.Header>
     <h4>Información de la tarea @Id</h4>
-</Header>
+</AntDesign.Header>
 
 <ErrorBoundary>
-    <RadzenDataList @ref="grid" AllowPaging="true" PageSize="5" Data="@tasks" TItem="Issue">
+   @*  <RadzenDataList @ref="grid" AllowPaging="true" PageSize="5" Data="@tasks" TItem="Issue">
         <Template Context="issue">
             <div style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding: 10px;">
                 <div><strong>Resumen:</strong> @issue.Summary</div>
@@ -28,7 +27,7 @@
                 <div><strong>Descripción:</strong> @issue.Description</div>
             </div>
         </Template>
-    </RadzenDataList>
+    </RadzenDataList> *@
 </ErrorBoundary>
 
 @code {

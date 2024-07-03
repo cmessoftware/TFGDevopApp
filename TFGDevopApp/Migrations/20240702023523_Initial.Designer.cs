@@ -11,8 +11,8 @@ using TFGDevopsApp.Data;
 namespace TFGDevopsApp.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240608171656_LoginRegister")]
-    partial class LoginRegister
+    [Migration("20240702023523_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TFGDevopsApp.Dtos.Plastic.Repositories
+﻿namespace TFGDevopsApp.Dtos.Plastic.Repositories
 {
     public class DirectoryItemDto
     {

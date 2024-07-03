@@ -8,7 +8,7 @@ using TFGDevopsApp.UseCases.Contributor.Command.CodeReviewProject;
 
 namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 {
-    public class FolderTreeCommandHandler : IRequestHandler<FolderTreeCommand, ResultMessage<FolderTreeDto>>
+    public class FolderTreeCommandHandler : IRequestHandler<FolderTreeCommand, Result<FolderTreeDto>>
     {
         private readonly IConfiguration _configuration;
 
@@ -18,7 +18,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
         }
 
 
-        public async Task<ResultMessage<FolderTreeDto>> Handle(FolderTreeCommand request, CancellationToken cancellationToken)
+        public async Task<Result<FolderTreeDto>> Handle(FolderTreeCommand request, CancellationToken cancellationToken)
         {
             var projectPath = request.ProjectPath;
             var patterns = _configuration["profiles:TFGDevopsApp.Web:environmentVariables:includeFiles"];
@@ -29,7 +29,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 
             if (codeFiles.Length == 0)
             {
-                return await Task.FromResult(new ResultMessage<FolderTreeDto>
+                return await Task.FromResult(new Result<FolderTreeDto>
                 {
                     Message = $"No se encontraron archivo de código en {projectPath}",
                     Success = false,
@@ -51,7 +51,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 
             if (!foundFiles.Any())
             {
-                return await Task.FromResult(new ResultMessage<FolderTreeDto>
+                return await Task.FromResult(new Result<FolderTreeDto>
                 {
                     Message = $"No se encontraron archivo de código en {projectPath}",
                     Success = false,
@@ -62,7 +62,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 
             var folderStructure = GetFolderStructure(request.ProjectPath, xmlFolderRoot, request.ExcludePaths);
 
-            return await Task.FromResult(new ResultMessage<FolderTreeDto>
+            return await Task.FromResult(new Result<FolderTreeDto>
             {
                 Message = "Estructura de directorios del proyecto cargado correctamente",
                 Success = true,

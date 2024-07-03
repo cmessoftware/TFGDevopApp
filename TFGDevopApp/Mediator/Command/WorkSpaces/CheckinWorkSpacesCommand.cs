@@ -1,14 +1,12 @@
-﻿using System.Net.Http.Headers;
-using TFGDevopsApp.Core.Models.Result;
+﻿using MediatR;
+using System.Net.Http.Headers;
 using TFGDevopsApp.Common.Helpers;
+using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Infraestructure.Entity.Plastic;
-using MediatR;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace TFGDevopsApp.Mediator.Command.WorkSpaces
 {
-    public class CheckinWorkSpacesCommand : IRequest<ResultMessage<string>>
+    public class CheckinWorkSpacesCommand : IRequest<Result<string>>
     {
         public static HttpClient GetHttpClient()
         {

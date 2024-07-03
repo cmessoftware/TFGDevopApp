@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
 using System.Text;
-using System.Threading.Tasks;
 using TFGDevopsApp.Common.Exceptions;
 using TFGDevopsApp.Common.Extensions;
 
@@ -44,7 +43,7 @@ namespace TFGDevopsApp.Common.Helpers
             }
             else
             {
-                throw new RestClientException($"Error: {response.StatusCode} - {response.ErrorMessage}");
+                throw new RestClientException($"Error: {response.StatusCode} - {response.ErrorMessage} - {response.Content}");
             }
 
             return data;
@@ -207,5 +206,30 @@ namespace TFGDevopsApp.Common.Helpers
 
             return default(R);
         }
+
+        public static R Delete<R, T>(string apiPath, T input)
+        {
+            R data = default;
+
+            var url = $"{apiPath}/{input}";
+
+            var client = new RestClient(url);
+
+            var request = new RestRequest(Method.DELETE);
+
+            IRestResponse response = client.Delete(request);
+
+            if (response != null && response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                data = JsonConvert.DeserializeObject<R>(response.Content);
+            }
+            else
+            {
+                throw new RestClientException($"Error: {response.StatusCode} - {response.ErrorMessage}");
+            }
+
+            return data;
+        }
+
     }
 }

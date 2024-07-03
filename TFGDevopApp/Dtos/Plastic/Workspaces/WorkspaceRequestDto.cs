@@ -1,4 +1,4 @@
-﻿namespace TFGDevopsApp.Core.Models.Plastic
+﻿namespace TFGDevopsApp.Dto.Plastic.Workspaces
 {
     public class WorkspaceRequestDto
     {

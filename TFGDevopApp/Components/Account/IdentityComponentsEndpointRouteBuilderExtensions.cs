@@ -1,16 +1,10 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
-using System;
 using System.Security.Claims;
 using System.Text.Json;
-using TFGDevopsApp.Components.Account.Pages;
 using TFGDevopsApp.Data;
 
 namespace Microsoft.AspNetCore.Routing

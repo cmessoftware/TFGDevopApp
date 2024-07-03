@@ -6,11 +6,11 @@ using TFGDevopsApp.UseCases.Contributor.Command.CodeReviewProject;
 
 namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 {
-    internal class BuildProjectCommandHandler : IRequestHandler<BuildProjectCommand, ResultMessage<string>>
+    internal class BuildProjectCommandHandler : IRequestHandler<BuildProjectCommand, Result<string>>
     {
 
 
-        public async Task<ResultMessage<string>> Handle(BuildProjectCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(BuildProjectCommand request, CancellationToken cancellationToken)
         {
             var projectPath = Path.Combine(request.PathToCompile, request.RepositoryName);
 
@@ -18,7 +18,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
             var projectFiles = Directory.GetFiles(projectPath, "*.csproj", SearchOption.AllDirectories);
             if (projectFiles.Length == 0)
             {
-                return await Task.FromResult(new ResultMessage<string>
+                return await Task.FromResult(new Result<string>
                 {
                     Message = $"No se encontraron proyectos .NET en el directorio especificado {projectPath}",
                     Success = false
@@ -55,7 +55,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 
                 if (process.ExitCode != 0)
                 {
-                    return await Task.FromResult(new ResultMessage<string>
+                    return await Task.FromResult(new Result<string>
                     {
                         Message = $"Error: {output}",
                         Success = false
@@ -64,7 +64,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 
             }
 
-            return await Task.FromResult(new ResultMessage<string>
+            return await Task.FromResult(new Result<string>
             {
                 Message = "Proyecto compilado correctamente.",
                 Success = true

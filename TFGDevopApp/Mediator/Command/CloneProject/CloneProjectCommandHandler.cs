@@ -5,11 +5,11 @@ using TFGDevopsApp.Core.Models.Result;
 
 namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 {
-    internal class CloneProjectCommandHandler : IRequestHandler<CloneProjectCommand, ResultMessage<string>>
+    internal class CloneProjectCommandHandler : IRequestHandler<CloneProjectCommand, Result<string>>
     {
 
 
-        public Task<ResultMessage<string>> Handle(CloneProjectCommand request, CancellationToken cancellationToken)
+        public Task<Result<string>> Handle(CloneProjectCommand request, CancellationToken cancellationToken)
         {
 
             Console.WriteLine($"Clonando: {request.SourceRepositoryUrl} en {request.DstRepositoryUrl}");
@@ -36,7 +36,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 
             if (process.ExitCode != 0)
             {
-                return Task.FromResult(new ResultMessage<string>
+                return Task.FromResult(new Result<string>
                 {
                     Message = $"Error en el clonado del repositorio {request.SourceRepositoryUrl}.",
                     Success = false
@@ -44,7 +44,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 
             }
 
-            return Task.FromResult(new ResultMessage<string>
+            return Task.FromResult(new Result<string>
             {
                 Message = $"Clonando: {request.SourceRepositoryUrl} en {request.DstRepositoryUrl} exitoso",
                 Success = true

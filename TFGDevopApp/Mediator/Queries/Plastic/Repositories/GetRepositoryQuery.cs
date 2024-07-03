@@ -5,7 +5,7 @@ using TFGDevopsApp.Dtos.Plastic.Repositories;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
 {
-    public class GetRepositoryQuery : IRequest<ResultMessage<RepositoryResponseDto>>
+    public class GetRepositoryQuery : IRequest<Result<RepositoryResponseDto>>
     {
         public string Path { get; }
 

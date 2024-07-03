@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using TFGDevopsApp.Data;
+﻿using TFGDevopsApp.Data;
 
 namespace TFGDevopsApp.Interfaces
 {
     public interface IUserRepository
     {
 
-        Task<ApplicationUser> RegisterUser(string  email, string password);
+        Task<ApplicationUser> RegisterUser(string email, string password);
 
         Task<ApplicationUser> GetUserById(string userId);
 

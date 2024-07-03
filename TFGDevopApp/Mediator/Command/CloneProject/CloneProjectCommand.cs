@@ -3,7 +3,7 @@ using TFGDevopsApp.Core.Models.Result;
 
 namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 {
-    public class CloneProjectCommand : IRequest<ResultMessage<string>>
+    public class CloneProjectCommand : IRequest<Result<string>>
     {
         public string SourceRepositoryUrl { get; set; }
         public string DstRepositoryUrl { get; set; }

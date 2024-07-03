@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace TFGDevopsApp.Interfaces
+﻿namespace TFGDevopsApp.Interfaces
 {
     //Unit of Work Pattern
     public interface IBaseRepository<T> where T : class

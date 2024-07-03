@@ -1,10 +1,9 @@
 ﻿using MediatR;
 using TFGDevopsApp.Core.Models.Result;
-using TFGDevopsApp.Dtos.FolderTree;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
 {
-    public class GetRepositoryFilesQuery : IRequest<ResultMessage<FolderTree>>
+    public class GetRepositoryFilesQuery : IRequest<Result<FolderTree>>
     {
         public string RepoName { get; }
         public string PathUrl { get; set; }

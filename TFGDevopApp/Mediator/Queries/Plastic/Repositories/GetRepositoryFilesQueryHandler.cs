@@ -1,18 +1,12 @@
-﻿using TFGDevopsApp.Core.Models.Result;
-using TFGDevopsApp.Common.Helpers;
+﻿using AutoMapper;
 using MediatR;
-using AutoMapper;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
+using TFGDevopsApp.Common.Helpers;
+using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Dtos.Plastic.Repositories;
-using TFGDevopsApp.Dtos.FolderTree;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
 {
-    public class GetRepositoryFilesQueryHandler : IRequestHandler<GetRepositoryFilesQuery, ResultMessage<FolderTree>>
+    public class GetRepositoryFilesQueryHandler : IRequestHandler<GetRepositoryFilesQuery, Result<FolderTree>>
     {
         private readonly IMapper _mapper;
         private readonly ILogger<GetRepositoriesQueryHandler> _logger;
@@ -24,7 +18,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
             _logger = logger;
         }
 
-        public async Task<ResultMessage<FolderTree>> Handle(GetRepositoryFilesQuery request, CancellationToken cancellationToken)
+        public async Task<Result<FolderTree>> Handle(GetRepositoryFilesQuery request, CancellationToken cancellationToken)
         {
 
             //path = string.IsNullOrEmpty(path) ? "" :
@@ -45,7 +39,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
             if (allTrees != null)
             {
                 return await Task.FromResult(
-                    new ResultMessage<FolderTree>()
+                    new Result<FolderTree>()
                     {
                         Data = allTrees,
                         Message = "Archivos encontrados",
@@ -56,7 +50,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
             else
             {
                 return await Task.FromResult(
-                    new ResultMessage<FolderTree>()
+                    new Result<FolderTree>()
                     {
                         Data = null,
                         Message = "No se encontraron archivos",

@@ -1,5 +1,3 @@
-using System;
-
 namespace TFGDevopsApp.Core.Models
 {
     public class Appointment

@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using TFGDevopsApp.Common.Helpers;
-using TFGDevopsApp.Core.Models.Plastic;
 using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dto.Plastic.Workspaces;
 
 namespace TFGDevopsApp.Mediator.Command.WorkSpaces
 {
-    public class CreateWorkSpacesCommandHandler : IRequestHandler<CreateWorkSpacesCommand, ResultMessage<bool>>
+    public class CreateWorkSpacesCommandHandler : IRequestHandler<CreateWorkSpacesCommand, Result<bool>>
     {
         private readonly IConfiguration _configuration;
 
@@ -14,15 +14,15 @@ namespace TFGDevopsApp.Mediator.Command.WorkSpaces
             _configuration = configuration;
         }
 
-        public async Task<ResultMessage<bool>> Handle(CreateWorkSpacesCommand request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(CreateWorkSpacesCommand request, CancellationToken cancellationToken)
         {
             var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsApp.Web:environmentVariables:PLASTIC_API_URL");
             if (string.IsNullOrEmpty(plasticBaseUrl))
                 return await Task.FromResult(
-                    new ResultMessage<bool>()
+                    new Result<bool>()
                     {
                         Data = false,
-                        Message = "Failed to create workspace.",
+                        Message = $"No se puede crear workspace {request.Workspace.Name}",
                         Success = false
                     });
 
@@ -31,20 +31,20 @@ namespace TFGDevopsApp.Mediator.Command.WorkSpaces
             if (response)
             {
                 return await Task.FromResult(
-                    new ResultMessage<bool>()
+                    new Result<bool>()
                     {
                         Data = true,
-                        Message = $"Workspace {request.Workspace.Name} created successfully.",
+                        Message = $"Workspace {request.Workspace.Name} creado correctamente.",
                         Success = true
                     });
             }
             else
             {
                 return await Task.FromResult(
-                    new ResultMessage<bool>()
+                    new Result<bool>()
                     {
                         Data = false,
-                        Message = "Failed to create workspace.",
+                        Message = $"Error al crear workspace {request.Workspace.Name}.",
                         Success = false
                     });
             }
@@ -52,4 +52,3 @@ namespace TFGDevopsApp.Mediator.Command.WorkSpaces
     }
 }
 
-    

@@ -9,19 +9,20 @@
 @using TFGDevopsApp.Dtos.Plastic.Repositories
 @using TFGDevopsApp.Dtos.Plastic.Workspaces
 @using TFGDevopsApp.Interfaces
-@using TFGDevopsApp.Core.Models.Plastic
 @using System.Linq
 @using TFGDevopsApp.Dtos.FolderTree
+@using Radzen.Blazor
 @inject IPlasticServices plasticServices
 @inject IConfiguration configuration
 @inject IMapper _mapper
 @inject ILogger<FolderItem> _logger
-@using Radzen.Blazor
+@inject IJSRuntime jsRuntime
+@inject Radzen.DialogService dialogService
 
 
 <div class="container">
     <div class="row">
-        <div class="col-6">
+        <div class="col-12">
             <div class="rz-grid-table-cell">
              <RadzenPanel>
                 <RadzenTree Data="@FolderTrees"
@@ -42,40 +43,45 @@
             </RadzenPanel>
             </div>
         </div>
-        <div class="col-6">
+       @*  <div class="col-8">
             <div class="rz-grid-table-cell">
-                <RadzenPanel>
-                   <div class="row">
-                        <div class="col-6">
-                            <RadzenText>
-                                <h4>@CodeFileName</h4>
-                            </RadzenText>
+                    <RadzenPanel>
+                        <div class="row">
+                            <div class="col-6 px-5">
+                                <RadzenButton Disabled=true Text="Check In" Click="@(() => Checkin())" />
+                            </div>
+                            <div class="col-6">
+                                <RadzenButton Disabled=false Text="Solicitar Revisión" Click="@(() => RequestRevision())" />
+                            </div>
                         </div>
-                        <div class="col-6">
-                            <RadzenButton Text="Solicitar Revisión" Click="@(() => SolicitarRevision())" />
+                        <div class="row">
+                            <div class="col-12">
+                                @if (IsFile)
+                                {
+                                    <StandaloneCodeEditor Id="codeReviewId"
+                                      ConstructionOptions="EditorConstructionOptions" />
+                                    <div class="rz-p-12 rz-text-align-center">
+                                        <RadzenText>@CodeFileName</RadzenText>
+                                        <pre>
+                                            <code class="language-csharp">
+                                                @CodeFileContent    
+                                            </code>
+                                         </pre>
+                                        <RadzenButton Text="Close" ButtonStyle="ButtonStyle.Secondary" Click=@Close />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <RadzenPanel Text="Seleccione un archivo para ver su contenido">
+                                    </RadzenPanel>
+                                }
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            @if (IsFile)
-                            {
-                                @* <StandaloneCodeEditor Id="codeReviewId"
-                                  ConstructionOptions="EditorConstructionOptions" /> *@
-                                @*   <RadzenTextArea Value="@CodeFileContent">
-                                  </RadzenTextArea> *@
-                             }
-                            else
-                            {
-                                <RadzenPanel Text="Seleccione un archivo para ver su contenido">
-                                </RadzenPanel>
-                            }
-                        </div>
-                    </div>
-                </RadzenPanel>
-            </div>
+                    </RadzenPanel>
+                </div>
+            </div> *@
         </div>
     </div>
-</div>
    
 
 @code {
@@ -112,7 +118,27 @@
         //LoadSubTrees(FolderTrees, null);
     }
 
-    private void SolicitarRevision()
+    public async Task OpenCode()
+    {
+        await dialogService.OpenAsync(CodeFileName, ds =>
+          @<div> @CodeFileContent </div> ,
+          new Radzen.DialogOptions()    
+          {
+             CssClass = "language-csharp"
+          });
+     }
+
+    private void RequestRevision()
+    {
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await jsRuntime.InvokeVoidAsync("Prism.highlightAll");
+    }
+
+    private void Checkin()
     {
 
     }
@@ -128,10 +154,15 @@
             };
     }
 
-    private void LoadSubTrees(List<FolderTree> nodes, int? revisionId)
+    private void Close()
+    {
+        IsFile = false;
+    }
+
+    private void LoadSubTrees(List<FolderTree> nodes, int? RequestRevisionId)
     {
         // Get all nodes that are children of the current parentId
-        var children = nodes.Where(x => x.RevisionId == revisionId).ToList();
+        var children = nodes.Where(x => x.RevisionId == RequestRevisionId).ToList();
 
         foreach (var child in children)
         {
@@ -139,7 +170,7 @@
             LoadSubTrees(nodes, child.RevisionId);
 
             // Find the parent node and add this child to its Children list
-            var parent = nodes.FirstOrDefault(x => x.Id == revisionId);
+            var parent = nodes.FirstOrDefault(x => x.Id == RequestRevisionId);
             if (parent != null)
             {
                 parent.Children.Add(child);
@@ -181,6 +212,9 @@
     private async Task LoadDataAsync(TreeExpandEventArgs args)
     {
         var items = args.Value as List<FolderTree>;
+
+        if (items == null)
+            return;
 
         foreach(var item in items)
         {
@@ -269,7 +303,7 @@
 
     private async Task<List<FolderTree>> LoadChildrenAsync(FolderTree item)
     {
-        ResultMessage<FolderTree> folderTree = new ResultMessage<FolderTree>();
+        Result<FolderTree> folderTree = new Result<FolderTree>();
 
         if (item != null)
         {
@@ -280,6 +314,12 @@
 
             folderTree = await plasticServices.GetFolderTreeAsync(path);
             IsFile = folderTree.Data.Type == "file";
+            if (IsFile)
+            {
+                CodeFileContent = await plasticServices.GetFileContentAsyc(folderTree.Data.Content);
+                CodeFileName = folderTree.Data.Name;
+                await OpenCode();
+            }
         }
         else
             folderTree =  await Task.FromResult(folderTree);

@@ -2,35 +2,37 @@
 using TFGDevopsApp.Common.Helpers;
 using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Dtos.Plastic.Repositories;
-using TFGDevopsApp.Mediator.Queries.Plastic.Repositories;
 
 namespace TFGDevopsApp.Mediator.Command.Repositories
 {
-    public class GetRepositoriesQueryHandler : IRequestHandler<GetRepositoriesQuery, ResultMessage<List<RepositoryResponseDto>>>
+    public class CreateRepositoryCommandHandler : IRequestHandler<CreateRepositoryCommand, Result<CreateRepositoryResponseDto>>
     {
         private readonly IConfiguration _configuration;
 
-        public GetRepositoriesQueryHandler(IConfiguration configuration)
+        public CreateRepositoryCommandHandler(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public async Task<ResultMessage<List<RepositoryResponseDto>>> Handle(GetRepositoriesQuery request, CancellationToken cancellationToken)
+        public async Task<Result<CreateRepositoryResponseDto>> Handle(CreateRepositoryCommand request, CancellationToken cancellationToken)
         {
-            List<RepositoryResponseDto> response = null;
+            CreateRepositoryResponseDto response = new();
             var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsTools.Server:environmentVariables:PlasticRest:Url");
 
             if (!string.IsNullOrEmpty(plasticBaseUrl))
-                response = RestClientHelper.Get<List<RepositoryResponseDto>>(plasticBaseUrl + request.Path);
+            {
+                var url = $"{plasticBaseUrl}api/v1/repos";
+                response = RestClientHelper.Post<CreateRepositoryResponseDto, CreateRepositoryRequestDto>(url, request.Repository);
+            }
 
 
             if (response != null)
             {
                 return await Task.FromResult(
-                    new ResultMessage<List<RepositoryResponseDto>>()
+                    new Result<CreateRepositoryResponseDto>()
                     {
                         Data = response,
-                        Message = "Repositorios encontrados",
+                        Message = $"Repositorio {request.Repository.Name} creado correctamente",
                         Success = true
                     });
 
@@ -38,10 +40,10 @@ namespace TFGDevopsApp.Mediator.Command.Repositories
             else
             {
                 return await Task.FromResult(
-                    new ResultMessage<List<RepositoryResponseDto>>()
+                    new Result<CreateRepositoryResponseDto>()
                     {
                         Data = null,
-                        Message = "No se encontraron repositorios",
+                        Message = "No se pudo crear repositorio",
                         Success = false
                     });
             }

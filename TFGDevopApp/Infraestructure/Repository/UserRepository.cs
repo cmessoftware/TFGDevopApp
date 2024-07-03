@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TFGDevopsApp.Interfaces;
 using TFGDevopsApp.Data;
-using System.Threading.Tasks;
 
 namespace TFGDevopsApp.Infraestructure.Repository
 {

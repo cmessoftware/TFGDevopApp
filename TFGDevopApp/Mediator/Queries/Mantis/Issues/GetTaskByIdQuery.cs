@@ -1,10 +1,9 @@
 ﻿using MediatR;
 using TFGDevopsApp.Core.Models.Result;
-using TFGDevopsApp.Models.Mantis;
 
 namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
 {
-    public class GetTaskByIdQuery : IRequest<ResultMessage<TaskResponseDto>>
+    public class GetTaskByIdQuery : IRequest<Result<TaskResponseDto>>
     {
         public GetTaskByIdQuery(string path, int id)
         {

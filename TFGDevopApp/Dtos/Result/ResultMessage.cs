@@ -1,6 +1,6 @@
 ﻿namespace TFGDevopsApp.Core.Models.Result
 {
-    public class ResultMessage<T>
+    public class Result<T>
     {
         public bool Success { get; set; }
         public string Message { get; set; } = string.Empty;

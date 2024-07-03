@@ -4,7 +4,7 @@ using TFGDevopsApp.Dtos.Plastic.Workspaces;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.WorkSpaces
 {
-    public class GetWorkSpacesQuery : IRequest<ResultMessage<List<WorkspaceResponseDto>>>
+    public class GetWorkSpacesQuery : IRequest<Result<List<WorkspaceResponseDto>>>
     {
         public string Path;
 

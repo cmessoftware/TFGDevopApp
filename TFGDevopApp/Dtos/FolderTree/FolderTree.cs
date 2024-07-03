@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TFGDevopsApp.Dtos.FolderTree
+﻿namespace TFGDevopsApp.Dtos.FolderTree
 {
     public class FolderTree
     {

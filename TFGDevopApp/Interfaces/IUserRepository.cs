@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using TFGDevopsApp.Data;
+﻿using TFGDevopsApp.Data;
 
 namespace TFGDevopsApp.Interfaces
 {

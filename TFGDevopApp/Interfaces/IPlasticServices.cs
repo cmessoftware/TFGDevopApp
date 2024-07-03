@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using TFGDevopsApp.Core.Models.Plastic;
-using TFGDevopsApp.Core.Models.Result;
-using TFGDevopsApp.Dtos.FolderTree;
+﻿using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dto.Plastic.Workspaces;
 using TFGDevopsApp.Dtos.Plastic.ChangeSets;
 using TFGDevopsApp.Dtos.Plastic.Repositories;
 using TFGDevopsApp.Dtos.Plastic.Workspaces;
@@ -11,14 +8,17 @@ namespace TFGDevopsApp.Interfaces
 {
     public interface IPlasticServices
     {
-        Task<ResultMessage<bool>> CreateRepositoryAsync(CreateRepositoryResponseDto repository);
-        Task<ResultMessage<bool>> CreateWorkSpaceAsync(WorkspaceRequestDto workspace);
+        Task<Result<bool>> RemoveWorkSpacesAsync(string name);
+        Task<Result<CreateRepositoryResponseDto>> CreateRepositoryAsync(CreateRepositoryRequestDto repository);
+       
+        Task<Result<bool>> EditWorkspaceAsync(EditWorkspaceRequestDto workspace);
+        Task<Result<bool>> CreateWorkSpaceAsync(WorkspaceRequestDto workspace);
         Task<string> GetFileContentAsyc(string path);
-        Task<ResultMessage<FolderTree>> GetFolderTreeAsync(string path);
-        Task<ResultMessage<RepositoryResponseDto>> GetRepositoryAsync(string path);
-        Task<ResultMessage<List<RepositoryResponseDto>>> GetRepositoriesAsync(string path);
-        Task<ResultMessage<List<WorkspaceResponseDto>>> GetWorkSpacesAsync(string path);
-        Task<ResultMessage<List<ChangeSetResponseDto>>> GetChangeSetsAsync(string path);
+        Task<Result<FolderTree>> GetFolderTreeAsync(string path);
+        Task<Result<RepositoryResponseDto>> GetRepositoryAsync(string path);
+        Task<Result<List<RepositoryResponseDto>>> GetRepositoriesAsync(string path);
+        Task<Result<List<WorkspaceResponseDto>>> GetWorkSpacesAsync(string path);
+        Task<Result<List<ChangeSetResponseDto>>> GetChangeSetsAsync(string path);
 
     }
 }

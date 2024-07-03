@@ -1,16 +1,12 @@
-﻿using TFGDevopsApp.Core.Models.Result;
+﻿using MediatR;
 using TFGDevopsApp.Common;
 using TFGDevopsApp.Common.Helpers;
-using MediatR;
-using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Threading;
+using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Dtos.Plastic.Workspaces;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.WorkSpaces
 {
-    public class GetWorkSpacesQueryHandler : IRequestHandler<GetWorkSpacesQuery, ResultMessage<List<WorkspaceResponseDto>>>
+    public class GetWorkSpacesQueryHandler : IRequestHandler<GetWorkSpacesQuery, Result<List<WorkspaceResponseDto>>>
     {
         private readonly IConfiguration _configuration;
 
@@ -19,7 +15,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.WorkSpaces
             _configuration = configuration;
         }
 
-        public async Task<ResultMessage<List<WorkspaceResponseDto>>> Handle(GetWorkSpacesQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<WorkspaceResponseDto>>> Handle(GetWorkSpacesQuery request, CancellationToken cancellationToken)
         {
             List<WorkspaceResponseDto> response = null;
             var plasticBaseUrl = _configuration.GetValue<string>(Constants.PlasticBaseUrlKey);
@@ -31,7 +27,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.WorkSpaces
             if (response != null)
             {
                 return await Task.FromResult(
-                    new ResultMessage<List<WorkspaceResponseDto>>()
+                    new Result<List<WorkspaceResponseDto>>()
                     {
                         Data = response,
                         Message = "WorkSpaces encontrados",
@@ -42,7 +38,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.WorkSpaces
             else
             {
                 return await Task.FromResult(
-                    new ResultMessage<List<WorkspaceResponseDto>>()
+                    new Result<List<WorkspaceResponseDto>>()
                     {
                         Data = null,
                         Message = "No se encontraron workspaces",

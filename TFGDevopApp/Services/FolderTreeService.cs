@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using TFGDevopsApp.Common.Helpers;
-using TFGDevopsApp.Dtos.FolderTree;
 using TFGDevopsApp.Dtos.Plastic.Repositories;
-using TFGDevopsApp.Interfaces;
 
 namespace TFGDevopsApp.Services
 {

@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using TFGDevopsApp.Interfaces;
-
-namespace TFGDevopsApp.Infraestructure.Repository
+﻿namespace TFGDevopsApp.Infraestructure.Repository
 {
     public class TareaRepository : ITareaRepository
     {

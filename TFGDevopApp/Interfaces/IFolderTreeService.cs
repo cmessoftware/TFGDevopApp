@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using TFGDevopsApp.Dtos.FolderTree;
-
-namespace TFGDevopsApp.Interfaces
+﻿namespace TFGDevopsApp.Interfaces
 {
     public interface IFolderTreeService
     {

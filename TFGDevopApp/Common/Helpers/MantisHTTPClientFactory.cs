@@ -1,5 +1,4 @@
 ﻿using RestSharp;
-using System.Net.Http;
 using TFGDevopsApp.Core.Helpers;
 
 namespace TFGDevopsApp.Common.Helpers

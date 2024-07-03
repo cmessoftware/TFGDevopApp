@@ -4,7 +4,7 @@ using TFGDevopsApp.Core.Models.Result;
 
 namespace TFGDevopsApp.UseCases.Contributor.Command.CodeReviewProject
 {
-    public class FolderTreeCommand : IRequest<ResultMessage<FolderTreeDto>>
+    public class FolderTreeCommand : IRequest<Result<FolderTreeDto>>
     {
         public string RepositoryName { get; set; }
         public string ProjectPath { get; set; }

@@ -6,7 +6,7 @@ using TFGDevopsApp.UseCases.Contributor.Command.CodeReviewProject;
 
 namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 {
-    public class CodeFileCommandHandler : IRequestHandler<CodeFileCommand, ResultMessage<CodeFileModel>>
+    public class CodeFileCommandHandler : IRequestHandler<CodeFileCommand, Result<CodeFileModel>>
     {
         private readonly IConfiguration _configuration;
 
@@ -16,7 +16,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
         }
 
 
-        public async Task<ResultMessage<CodeFileModel>> Handle(CodeFileCommand request, CancellationToken cancellationToken)
+        public async Task<Result<CodeFileModel>> Handle(CodeFileCommand request, CancellationToken cancellationToken)
         {
             var projectPath = request.ProjectPath;
             var patterns = _configuration["profiles:TFGDevopsApp.Web:environmentVariables:includeFiles"];
@@ -26,7 +26,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 
             if (codeFiles.Length == 0)
             {
-                return await Task.FromResult(new ResultMessage<CodeFileModel>
+                return await Task.FromResult(new Result<CodeFileModel>
                 {
                     Message = $"No se encontraron archivo de código en {projectPath}",
                     Success = false,
@@ -34,7 +34,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
             }
 
 
-            return await Task.FromResult(new ResultMessage<CodeFileModel>
+            return await Task.FromResult(new Result<CodeFileModel>
             {
                 Message = "Estura de directorios del proyecyo cargado correctamente",
                 Success = true,

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TFGDevopsApp.Infraestructure.Entity.Plastic
+﻿namespace TFGDevopsApp.Infraestructure.Entity.Plastic
 {
     public class RevisionInfoEntityPlastic
     {

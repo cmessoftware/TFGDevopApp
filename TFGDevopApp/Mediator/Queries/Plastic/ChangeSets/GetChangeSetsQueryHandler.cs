@@ -1,11 +1,11 @@
-﻿using TFGDevopsApp.Core.Models.Result;
+﻿using MediatR;
 using TFGDevopsApp.Common.Helpers;
-using MediatR;
+using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Dtos.Plastic.ChangeSets;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.ChangeSets
 {
-    public class GetChangeSetsQueryHandler : IRequestHandler<GetChangeSetsQuery, ResultMessage<List<ChangeSetResponseDto>>>
+    public class GetChangeSetsQueryHandler : IRequestHandler<GetChangeSetsQuery, Result<List<ChangeSetResponseDto>>>
     {
         private readonly IConfiguration _configuration;
 
@@ -14,7 +14,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.ChangeSets
             _configuration = configuration;
         }
 
-        public async Task<ResultMessage<List<ChangeSetResponseDto>>> Handle(GetChangeSetsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<ChangeSetResponseDto>>> Handle(GetChangeSetsQuery request, CancellationToken cancellationToken)
         {
             List<ChangeSetResponseDto> response = null;
             var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsApp.Web:environmentVariables:PLASTIC_API_URL");
@@ -26,7 +26,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.ChangeSets
             if (response != null)
             {
                 return await Task.FromResult(
-                    new ResultMessage<List<ChangeSetResponseDto>>()
+                    new Result<List<ChangeSetResponseDto>>()
                     {
                         Data = response,
                         Message = "Change sets encontrados",
@@ -37,7 +37,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.ChangeSets
             else
             {
                 return await Task.FromResult(
-                    new ResultMessage<List<ChangeSetResponseDto>>()
+                    new Result<List<ChangeSetResponseDto>>()
                     {
                         Data = null,
                         Message = "No se encontraron change sets",

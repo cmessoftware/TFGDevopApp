@@ -1,5 +1,4 @@
-﻿using TFGDevopsApp.Interfaces;
-using TFGDevopsApp.Data;
+﻿using TFGDevopsApp.Data;
 
 namespace TFGDevopsApp.Services
 {

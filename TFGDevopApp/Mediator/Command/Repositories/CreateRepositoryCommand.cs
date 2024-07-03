@@ -4,12 +4,13 @@ using TFGDevopsApp.Dtos.Plastic.Repositories;
 
 namespace TFGDevopsApp.Mediator.Command.Repositories
 {
-    public class CreateRepositoryCommand : IRequest<ResultMessage<bool>>
+    public class CreateRepositoryCommand : IRequest<Result<CreateRepositoryResponseDto>>
     {
-        public CreateRepositoryResponseDto Repository { get; set; }
+        public CreateRepositoryRequestDto Repository { get; set; }
 
-        public CreateRepositoryCommand(CreateRepositoryResponseDto repository)
+        public CreateRepositoryCommand(CreateRepositoryRequestDto repository)
         {
+            repository.CreationDate = DateTime.Now;
             Repository = repository;
         }
     }

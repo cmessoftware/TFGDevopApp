@@ -1,11 +1,10 @@
-﻿using TFGDevopsApp.Core.Models.Result;
+﻿using MediatR;
 using TFGDevopsApp.Common.Helpers;
-using TFGDevopsApp.Models.Mantis;
-using MediatR;
+using TFGDevopsApp.Core.Models.Result;
 
 namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
 {
-    public class GetTaskQueryHandler : IRequestHandler<GetTaskQuery, ResultMessage<TaskResponseDto>>
+    public class GetTaskQueryHandler : IRequestHandler<GetTaskQuery, Result<TaskResponseDto>>
     {
         private readonly IConfiguration _configuration;
 
@@ -15,7 +14,7 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             this._configuration = configuration;
         }
 
-        public async Task<ResultMessage<TaskResponseDto>> Handle(GetTaskQuery request, CancellationToken cancellationToken)
+        public async Task<Result<TaskResponseDto>> Handle(GetTaskQuery request, CancellationToken cancellationToken)
         {
             TaskResponseDto response = null;
             var mantisBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsTools.Server:environmentVariables:MantisRest:Url");
@@ -33,7 +32,7 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             if (response != null)
             {
                 return await Task.FromResult(
-                    new ResultMessage<TaskResponseDto>()
+                    new Result<TaskResponseDto>()
                     {
                         Data = response,
                         Message = "Tareas encontrados",
@@ -44,7 +43,7 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             else
             {
                 return await Task.FromResult(
-                    new ResultMessage<TaskResponseDto>()
+                    new Result<TaskResponseDto>()
                     {
                         Data = null,
                         Message = "No se encontraron tareas",

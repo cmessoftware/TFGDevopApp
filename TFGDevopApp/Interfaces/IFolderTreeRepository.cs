@@ -1,6 +1,4 @@
-﻿using TFGDevopsApp.Dtos.FolderTree;
-
-namespace TFGDevopsApp.Interfaces
+﻿namespace TFGDevopsApp.Interfaces
 {
     public interface IFolderTreeRepository
     {

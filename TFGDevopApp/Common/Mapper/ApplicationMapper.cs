@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using TFGDevopsApp.Dtos.FolderTree;
 using TFGDevopsApp.Dtos.Plastic.Repositories;
 
 namespace TFGDevopsApp.Common.Mapper
@@ -16,6 +15,16 @@ namespace TFGDevopsApp.Common.Mapper
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(x => x.Name))
                 .ForMember(dst => dst.Type, opt => opt.MapFrom(x => x.Type))
                 .ForMember(dst => dst.Children, opt => opt.MapFrom<FolderTreeItemsResolver>());
+
+
+            CreateMap<RepositoryResponseDto, CreateRepositoryResponseDto>()
+                .ForMember(dst => dst.MachineName, opt => opt.MapFrom(x => x.repository.server))
+                .ForMember(dst => dst.Name, opt => opt.MapFrom(x => x.repository.name))
+                .ForMember(dst => dst.Comment, opt => opt.MapFrom(x => x.comment))
+                .ForMember(dst => dst.CreationDate, opt => opt.MapFrom(x => x.creationDate))
+                .ForMember(dst => dst.owner, opt => opt.MapFrom(x => new OwnerModel()));
+              
+
 
         }
     }

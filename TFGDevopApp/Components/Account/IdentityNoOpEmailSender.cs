@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using System.Threading.Tasks;
 using TFGDevopsApp.Data;
 
 namespace TFGDevopsApp.Components.Account

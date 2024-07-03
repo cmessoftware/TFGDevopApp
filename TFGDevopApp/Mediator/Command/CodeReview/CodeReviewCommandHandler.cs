@@ -6,10 +6,10 @@ using TFGDevopsApp.UseCases.Contributor.Command.CodeReviewProject;
 
 namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 {
-    internal class CodeReviewCommandHandler : IRequestHandler<CodeReviewCommand, ResultMessage<CodeFileModel>>
+    internal class CodeReviewCommandHandler : IRequestHandler<CodeReviewCommand, Result<CodeFileModel>>
     {
 
-        public async Task<ResultMessage<CodeFileModel>> Handle(CodeReviewCommand request, CancellationToken cancellationToken)
+        public async Task<Result<CodeFileModel>> Handle(CodeReviewCommand request, CancellationToken cancellationToken)
         {
             var projectPath = request.ProjectPath;
 
@@ -17,7 +17,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
             var codeFiles = Directory.GetFiles(projectPath, request.IncludeFiles, SearchOption.AllDirectories);
             if (codeFiles.Length == 0)
             {
-                return await Task.FromResult(new ResultMessage<CodeFileModel>
+                return await Task.FromResult(new Result<CodeFileModel>
                 {
                     Message = $"No se encontraron archivo de código en {projectPath}",
                     Success = false,
@@ -28,7 +28,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
             {
                 var code = File.ReadAllText(request.ProjectPath);
 
-                return await Task.FromResult(new ResultMessage<CodeFileModel>
+                return await Task.FromResult(new Result<CodeFileModel>
                 {
                     Success = true,
                     Data = new CodeFileModel
@@ -41,7 +41,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 
             }
 
-            return await Task.FromResult(new ResultMessage<CodeFileModel>
+            return await Task.FromResult(new Result<CodeFileModel>
             {
                 Message = "Archivo cargado correctamente",
                 Success = true

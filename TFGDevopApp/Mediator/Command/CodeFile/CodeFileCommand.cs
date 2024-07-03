@@ -4,7 +4,7 @@ using TFGDevopsApp.Core.Models.Result;
 
 namespace TFGDevopsApp.UseCases.Contributor.Command.CodeReviewProject
 {
-    public class CodeFileCommand : IRequest<ResultMessage<CodeFileModel>>
+    public class CodeFileCommand : IRequest<Result<CodeFileModel>>
     {
         public string CodeFileName { get; set; }
         public string ProjectPath { get; set; }

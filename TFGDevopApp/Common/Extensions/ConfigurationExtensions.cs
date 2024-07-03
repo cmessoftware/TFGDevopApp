@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace TFGDevopsApp.Common.Extensions
+﻿namespace TFGDevopsApp.Common.Extensions
 {
     public static class ConfigurationExtensions
     {

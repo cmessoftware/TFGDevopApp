@@ -4,7 +4,7 @@ using TFGDevopsApp.Dtos.Plastic.ChangeSets;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.ChangeSets
 {
-    public class GetChangeSetsQuery : IRequest<ResultMessage<List<ChangeSetResponseDto>>>
+    public class GetChangeSetsQuery : IRequest<Result<List<ChangeSetResponseDto>>>
     {
         public string Path;
 

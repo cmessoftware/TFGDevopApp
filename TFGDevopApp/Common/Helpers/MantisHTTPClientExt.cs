@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace TFGDevopsApp.Core.Helpers
+﻿namespace TFGDevopsApp.Core.Helpers
 {
     /// <summary>
     /// out of NSwag generator scope, an extension to the generated rest api client

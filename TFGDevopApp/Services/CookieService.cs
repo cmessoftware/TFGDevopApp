@@ -6,7 +6,7 @@ namespace TFGDevopsApp.Services
 {
     public class CookieService
     {
-        public async Task<ResultMessage<UserCreateResponseDto>> Login(string name)
+        public async Task<Result<UserCreateResponseDto>> Login(string name)
         {
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(new List<Claim>
              {
@@ -14,7 +14,7 @@ namespace TFGDevopsApp.Services
              }, "auth");
             ClaimsPrincipal claims = new ClaimsPrincipal(claimsIdentity);
             //await HttpContext.SignInAsync(claims);
-            return new ResultMessage<UserCreateResponseDto>()
+            return new Result<UserCreateResponseDto>()
             {
                 Data = new UserCreateResponseDto()
                 {

@@ -1,15 +1,11 @@
-﻿using TFGDevopsApp.Core.Models.Result;
+﻿using MediatR;
 using TFGDevopsApp.Common.Helpers;
-using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Dtos.Plastic.Repositories;
 
 namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
 {
-    public class GetRepositoriesQueryHandler : IRequestHandler<GetRepositoriesQuery, ResultMessage<List<RepositoryResponseDto>>>
+    public class GetRepositoriesQueryHandler : IRequestHandler<GetRepositoriesQuery, Result<List<RepositoryResponseDto>>>
     {
         private readonly IConfiguration _configuration;
 
@@ -18,7 +14,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
             _configuration = configuration;
         }
 
-        public async Task<ResultMessage<List<RepositoryResponseDto>>> Handle(GetRepositoriesQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<RepositoryResponseDto>>> Handle(GetRepositoriesQuery request, CancellationToken cancellationToken)
         {
             List<RepositoryResponseDto> response = null;
             var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsTools.Server:environmentVariables:PlasticRest:Url");
@@ -30,7 +26,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
             if (response != null)
             {
                 return await Task.FromResult(
-                    new ResultMessage<List<RepositoryResponseDto>>()
+                    new Result<List<RepositoryResponseDto>>()
                     {
                         Data = response,
                         Message = "Repositorios encontrados",
@@ -41,7 +37,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
             else
             {
                 return await Task.FromResult(
-                    new ResultMessage<List<RepositoryResponseDto>>()
+                    new Result<List<RepositoryResponseDto>>()
                     {
                         Data = null,
                         Message = "No se encontraron repositorios",

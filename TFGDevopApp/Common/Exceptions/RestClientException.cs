@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TFGDevopsApp.Common.Exceptions
+﻿namespace TFGDevopsApp.Common.Exceptions
 {
     [Serializable]
     internal class RestClientException : Exception
