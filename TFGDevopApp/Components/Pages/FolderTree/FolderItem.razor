@@ -19,6 +19,16 @@
 @inject IJSRuntime jsRuntime
 @inject Radzen.DialogService dialogService
 
+<style>
+    .custom-dialog {
+        width: 80vw; /* Set the desired width */
+    }
+
+        .custom-dialog .rz-dialog {
+            max-width: unset; /* Override the default max-width */
+        }
+
+</style>
 
 <div class="container">
     <div class="row">
@@ -43,7 +53,7 @@
             </RadzenPanel>
             </div>
         </div>
-       @*  <div class="col-8">
+        <div class="col-8">
             <div class="rz-grid-table-cell">
                     <RadzenPanel>
                         <div class="row">
@@ -54,32 +64,9 @@
                                 <RadzenButton Disabled=false Text="Solicitar Revisión" Click="@(() => RequestRevision())" />
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                @if (IsFile)
-                                {
-                                    <StandaloneCodeEditor Id="codeReviewId"
-                                      ConstructionOptions="EditorConstructionOptions" />
-                                    <div class="rz-p-12 rz-text-align-center">
-                                        <RadzenText>@CodeFileName</RadzenText>
-                                        <pre>
-                                            <code class="language-csharp">
-                                                @CodeFileContent    
-                                            </code>
-                                         </pre>
-                                        <RadzenButton Text="Close" ButtonStyle="ButtonStyle.Secondary" Click=@Close />
-                                    </div>
-                                }
-                                else
-                                {
-                                    <RadzenPanel Text="Seleccione un archivo para ver su contenido">
-                                    </RadzenPanel>
-                                }
-                            </div>
-                        </div>
                     </RadzenPanel>
                 </div>
-            </div> *@
+            </div>
         </div>
     </div>
    
@@ -102,6 +89,7 @@
     private List<FolderTree> FolderTrees { get; set; } = new();
     private List<FolderTree> AllFolderTrees { get; set; } = new();
 
+   
     protected override async Task OnInitializedAsync()
     {
         var pathPlasticService = configuration.GetValue<string>(Constants.PlasticBaseUrlKey);
@@ -118,15 +106,29 @@
         //LoadSubTrees(FolderTrees, null);
     }
 
-    public async Task OpenCode()
+    public async Task ShowCode()
     {
         await dialogService.OpenAsync(CodeFileName, ds =>
-          @<div> @CodeFileContent </div> ,
+
+        @<div class="code-dialog-content">
+          <StandaloneCodeEditor Id = "codeReviewId"
+            ConstructionOptions = "EditorConstructionOptions" />
+             <div class="rz-p-12 rz-text-align-center" style="width:max-content">
+               <RadzenText>@CodeFileName</RadzenText>
+                <pre>
+                   <code class="language-csharp">
+                       @CodeFileContent
+                     </code>
+                 </pre>
+                 <RadzenButton Text = "Close" ButtonStyle="ButtonStyle.Secondary" Click=@Close /> 
+             </div>
+          </div>
+    ,
           new Radzen.DialogOptions()    
           {
-             CssClass = "language-csharp"
+              CssClass = "language-csharp custom-dialog"
           });
-     }
+    }
 
     private void RequestRevision()
     {
@@ -156,7 +158,7 @@
 
     private void Close()
     {
-        IsFile = false;
+        dialogService.Close();
     }
 
     private void LoadSubTrees(List<FolderTree> nodes, int? RequestRevisionId)
@@ -318,7 +320,7 @@
             {
                 CodeFileContent = await plasticServices.GetFileContentAsyc(folderTree.Data.Content);
                 CodeFileName = folderTree.Data.Name;
-                await OpenCode();
+                await ShowCode();
             }
         }
         else

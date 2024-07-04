@@ -1,10 +1,10 @@
 ﻿using TFGDevopsApp.Core.Helpers;
 
-namespace TFGDevopsApp.Models.Mantis
+namespace TFGDevopsApp.Dtos.Mantis.Issues
 {
-    public class TaskRequestDto
+    public class TaskCreateResponseDto
     {
         public List<Issue> Issues { get; set; }
     }
-
 }
+

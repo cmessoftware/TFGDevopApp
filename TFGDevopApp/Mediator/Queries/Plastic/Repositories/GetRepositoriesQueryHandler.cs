@@ -17,7 +17,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.Repositories
         public async Task<Result<List<RepositoryResponseDto>>> Handle(GetRepositoriesQuery request, CancellationToken cancellationToken)
         {
             List<RepositoryResponseDto> response = null;
-            var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsTools.Server:environmentVariables:PlasticRest:Url");
+            var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:PlasticRest:Url");
 
             if (!string.IsNullOrEmpty(plasticBaseUrl))
                 response = RestClientHelper.Get<List<RepositoryResponseDto>>(plasticBaseUrl + request.Path);

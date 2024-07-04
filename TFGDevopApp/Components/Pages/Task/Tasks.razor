@@ -1,8 +1,8 @@
-﻿@page "/task/Tasks"
+﻿@page "/task/tasks"
 @using Radzen
 @using Radzen.Blazor
+@using TFGDevopsApp.Components.Account.Shared
 @using TFGDevopsApp.Interfaces
-@using TFGDevopsApp.Models.Mantis
 @using TFGDevopsApp.Core.Helpers
 @inject IMantisServices mantisServices
 @inject NavigationManager NavigationManager
@@ -13,45 +13,80 @@
     }
 </style>
 
-<Header Title="Task">
-    <div class="rz-grid-table mb-10"></div>
-</Header>
 
 <ErrorBoundary>
-    <RadzenDataGrid @ref="grid" AllowFiltering="true" AllowColumnResize="true"
-                    FilterMode="FilterMode.Advanced" PageSize="5" AllowPaging="true" AllowSorting="true" 
-                    Data="@tasks" 
-                    TItem="Issue" ColumnWidth="300px"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterCleared=@FilterCleared
-                    LogicalFilterOperator="LogicalFilterOperator.Or" FilterPopupRenderMode="PopupRenderMode.OnDemand">
+    <div class="row">
+        <div class="col-md-10">
+            <StatusMessage Message="@Message" />
+            <RadzenText Style="font-family:monospace; font-size:xx-large" Text="Tareas" />
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10px" class="mt-2 mb-4">
+                <RadzenButton ButtonStyle="ButtonStyle.Success" 
+                              Icon="add_circle_outline" 
+                              Text="Crear Tareas" 
+                              Click="@Create" 
+                              Disabled="@(taskToInsert.Count() > 0)" />
+                @* <RadzenSelectBar @bind-Value="@editMode" TextProperty="Text" ValueProperty="Value" style="margin-right: 16px"
+                                 Data="@(Enum.GetValues(typeof(DataGridEditMode)).Cast<DataGridEditMode>().Select(t => new { Text = $"{t}", Value = t }))" Size="Radzen.ButtonSize.Small"
+                                 Disabled="@(repositoryToInsert.Count() > 1)" /> *@
+            </RadzenStack>
+            <RadzenDataGrid @ref="grid"
+                            AllowAlternatingRows="false"
+                            AllowFiltering="true"
+                            AllowPaging="true"
+                            PageSize="5"
+                            AllowSorting="true"
+                            Data="@tasks"
+                            TItem="Issue"
+                            RowUpdate="@UpdateTask"
+                            RowCreate="@(args => NavigateToTask(args.Id))"
+                            Sort="@Reset"
+                            Page="@Reset"
+                            Filter="@Reset"
+                            ColumnWidth="5000px">
         <Columns>
             <RadzenDataGridColumn TItem="Issue" Property="Id" Title="Id" />
             <RadzenDataGridColumn TItem="Issue" Property="Summary" Title="Resumen" />
             <RadzenDataGridColumn TItem="Issue" Property="Project.Name" Title="Project Name" />
             <RadzenDataGridColumn TItem="Issue" Title="Acciones">
                 <Template Context="mantisTask">
-                    <RadzenButton Click="@(() => NavigateToRepositories(mantisTask.Id.ToString()))"
-                                  Icon="edit"
+                    <RadzenButton Icon="account_balance_wallet"
                                   ButtonStyle="ButtonStyle.Light"
-                                  Variant="Radzen.Variant.Filled"
+                                  Variant="Variant.Flat"
                                   Size="Radzen.ButtonSize.Medium"
-                                  Style="width:auto">
-                        Tareas 
+                                  Click="@(args => NavigateToTask(mantisTask.Id))" @onclick:stopPropagation="true">
+                    </RadzenButton>
+                    <RadzenButton Icon="edit"
+                                  ButtonStyle="ButtonStyle.Light"
+                                  Variant="Variant.Flat"
+                                  Size="Radzen.ButtonSize.Medium"
+                                  Click="@(args => UpdateTask(mantisTask))" @onclick:stopPropagation="true">
+                    </RadzenButton>
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger"
+                                  Icon="delete"
+                                  Variant="Variant.Flat"
+                                  Shade="Shade.Lighter"
+                                  Size="Radzen.ButtonSize.Medium" class="my-1 ms-1"
+                                  Click="@(args => DeleteTask(mantisTask))">
                     </RadzenButton>
                 </Template>
             </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
+        </div>
+    </div>
 </ErrorBoundary>
 
 @code {
     [Parameter]
     public int TasId { get; set; }
-
-    RadzenDataGrid<Issue> grid;
-    List<Issue> tasks;
+    private string Message;
+    public RadzenDataGrid<Issue> grid;
+    List<Issue> tasks = new();
     IEnumerable<string> selectedTitles;
     IEnumerable<string> selectedSecondTitles;
+
+    List<Issue> taskToInsert = new();
+    List<Issue> taskToUpdate = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -60,11 +95,32 @@
         tasks = task.Data.Issues;
     }
 
-    private void NavigateToRepositories(string taskId)
+    private void UpdateTask(Issue task)
     {
-        NavigationManager.NavigateTo($"/task/TaskDetails/{taskId}");
+        NavigationManager.NavigateTo($"/task/update/{task.Id}");
     }
 
+    public void Create()
+    {
+        NavigationManager.NavigateTo("/task/create");
+    }
+
+    private void DeleteTask(Issue task)
+    {
+        NavigationManager.NavigateTo($"/task/delete/{task.Id}");
+    }
+
+
+    private void NavigateToTask(long? taskId)
+    {
+        NavigationManager.NavigateTo($"/task/details/{taskId}");
+    }
+
+    void Reset()
+    {
+        taskToInsert.Clear();
+        taskToUpdate.Clear();
+    }
 
     async Task OnSelectedTitlesChange(object value)
     {

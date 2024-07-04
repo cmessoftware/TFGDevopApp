@@ -3,9 +3,9 @@
     public class Constants
     {
 
-        public const string PlasticBaseUrlKey = "profiles:TFGDevopsTools.Server:environmentVariables:PlasticRest:Url";
+        public const string PlasticBaseUrlKey = "profiles:TFGDevops:environmentVariables:PlasticRest:Url";
 
-        public const string ExcludeFilesKey = "profiles:TFGDevopsTools.Server:environmentVariables:ExcludeFiles";
+        public const string ExcludeFilesKey = "profiles:TFGDevops:environmentVariables:ExcludeFiles";
 
     }
 }

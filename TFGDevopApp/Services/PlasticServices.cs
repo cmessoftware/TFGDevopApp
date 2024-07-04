@@ -22,7 +22,7 @@ namespace TFGDevopsApp.Services
             _mediator = mediator;
         }
 
-        public async Task<Result<CreateRepositoryResponseDto>> CreateRepositoryAsync(CreateRepositoryRequestDto repository)
+        public async Task<Result<CreateRepositoryResponseDto>> CreateRepositoryAsync(RepositoryCreateRequestDto repository)
         {
             var query = new CreateRepositoryCommand(repository);
             var result = await _mediator.Send(query);

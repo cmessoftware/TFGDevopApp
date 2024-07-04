@@ -9,7 +9,7 @@ namespace TFGDevopsApp.Interfaces
     public interface IPlasticServices
     {
         Task<Result<bool>> RemoveWorkSpacesAsync(string name);
-        Task<Result<CreateRepositoryResponseDto>> CreateRepositoryAsync(CreateRepositoryRequestDto repository);
+        Task<Result<CreateRepositoryResponseDto>> CreateRepositoryAsync(RepositoryCreateRequestDto repository);
        
         Task<Result<bool>> EditWorkspaceAsync(EditWorkspaceRequestDto workspace);
         Task<Result<bool>> CreateWorkSpaceAsync(WorkspaceRequestDto workspace);

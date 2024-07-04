@@ -10,7 +10,6 @@ global using System.Threading;
 global using System.Threading.Tasks;
 global using TFGDevopsApp.Dtos.FolderTree;
 global using TFGDevopsApp.Interfaces;
-global using TFGDevopsApp.Models.Mantis;
 
 
 

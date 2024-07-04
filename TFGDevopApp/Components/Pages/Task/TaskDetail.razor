@@ -1,7 +1,6 @@
-﻿@page "/task/TaskDetails/{Id}"
+﻿@page "/task/details/{Id}"
 @using TFGDevopsApp.Components.Pages.Code
 @using TFGDevopsApp.Interfaces
-@using TFGDevopsApp.Models.Mantis
 @using TFGDevopsApp.Core.Helpers
 @using Radzen
 @using Radzen.Blazor
@@ -35,7 +34,7 @@
     [Parameter]
     public string Id { get; set; }
 
-    public List<Issue> tasks { get; set; }
+    public List<Issue> tasks { get; set; } = new();
     RadzenDataList<Issue> grid;
     
     private void Volver()
@@ -47,6 +46,6 @@
     {
         await base.OnInitializedAsync();
         var response = await mantisServices.GetTaskById("issues",Convert.ToInt32(@Id));
-        tasks = response.Data.Issues;
+        tasks[0] = response.Data;
     }
 }

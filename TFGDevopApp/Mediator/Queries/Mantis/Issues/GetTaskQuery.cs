@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dtos.Mantis.Issues;
 
 namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
 {

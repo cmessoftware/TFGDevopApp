@@ -2,7 +2,7 @@
 
 namespace TFGDevopsApp.Dtos.Plastic.Repositories
 {
-    public class CreateRepositoryRequestDto
+    public class RepositoryCreateRequestDto
     {
         [JsonProperty("Name")]
         public string Name { get; set; }

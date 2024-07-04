@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using TFGDevopsApp.Common.Helpers;
 using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dtos.Mantis.Issues;
 
 namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
 {
@@ -17,8 +18,8 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
         public async Task<Result<TaskResponseDto>> Handle(GetTaskQuery request, CancellationToken cancellationToken)
         {
             TaskResponseDto response = null;
-            var mantisBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsTools.Server:environmentVariables:MantisRest:Url");
-            var authToken = _configuration.GetValue<string>("profiles:TFGDevopsTools.Server:environmentVariables:MantisRest:AuthToken");
+            var mantisBaseUrl = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:MantisRest:Url");
+            var authToken = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:MantisRest:AuthToken");
 
             if (!string.IsNullOrEmpty(mantisBaseUrl))
             {
@@ -26,9 +27,7 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
                 response = await RestClientHelper.SecurityGetAsync<TaskResponseDto>(url, authToken);
 
             }
-            //response = RestClientHelper.SecurityGet<List<Issue>>(mantisBaseUrl + request.Path, authToken);
-
-
+    
             if (response != null)
             {
                 return await Task.FromResult(

@@ -1,5 +1,8 @@
 ﻿using MediatR;
+using TFGDevopsApp.Core.Helpers;
 using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dtos.Mantis.Issues;
+using TFGDevopsApp.Mediator.Command.MantisBT;
 using TFGDevopsApp.Mediator.Queries.Mantis.Issues;
 
 namespace TFGDevopsApp.Services
@@ -28,7 +31,7 @@ namespace TFGDevopsApp.Services
             }
         }
 
-        public async Task<Result<TaskResponseDto>> GetTaskById(string path, int id)
+        public async Task<Result<Issue>> GetTaskById(string path, int id)
         {
             var query = new GetTaskByIdQuery(path, id);
             var result = await _mediator.Send(query);
@@ -43,9 +46,9 @@ namespace TFGDevopsApp.Services
             }
         }
 
-        public async Task<Result<TaskResponseDto>> CreateTask(TaskRequestDto request)
+        public async Task<Result<Issue>> CreateTask(Issue request)
         {
-            var query = new CreateTaskQuery(request);
+            var query = new CreateTaskCommand(request);
             var result = await _mediator.Send(query);
 
             if (result != null)
@@ -58,7 +61,7 @@ namespace TFGDevopsApp.Services
             }
         }
 
-        public async Task<Result<TaskResponseDto>> UpdateTask(TaskRequestDto request)
+        public async Task<Result<TaskCreateResponseDto>> UpdateTask(TaskCreateRequestDto request)
         {
             var query = new UpdateTaskQuery(request);
             var result = await _mediator.Send(query);
@@ -73,9 +76,24 @@ namespace TFGDevopsApp.Services
             }
         }
 
-        public Task<Result<List<TaskResponseDto>>> GetTaskById(int id)
+        public Task<Result<List<TaskCreateResponseDto>>> GetTaskById(int id)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<Result<List<Category>>> GetCategories()
+        {
+            var query = new GetCategoryQuery();
+            var result = await _mediator.Send(query);
+
+            if (result != null)
+            {
+                return await Task.FromResult(result);
+            }
+            else
+            {
+                return result;
+            }
         }
     }
 }

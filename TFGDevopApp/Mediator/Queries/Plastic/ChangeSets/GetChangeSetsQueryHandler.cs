@@ -17,7 +17,7 @@ namespace TFGDevopsApp.Mediator.Queries.Plastic.ChangeSets
         public async Task<Result<List<ChangeSetResponseDto>>> Handle(GetChangeSetsQuery request, CancellationToken cancellationToken)
         {
             List<ChangeSetResponseDto> response = null;
-            var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsApp.Web:environmentVariables:PLASTIC_API_URL");
+            var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:PLASTIC_API_URL");
 
             if (!string.IsNullOrEmpty(plasticBaseUrl))
                 response = RestClientHelper.Get<List<ChangeSetResponseDto>>(plasticBaseUrl + request.Path);

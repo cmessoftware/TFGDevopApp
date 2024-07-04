@@ -16,7 +16,7 @@ namespace TFGDevopsApp.Mediator.Command.Repositories
         public async Task<Result<bool>> Handle(RemoveRepositoryCommand request, CancellationToken cancellationToken)
         {
             bool response = false;
-            var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsTools.Server:environmentVariables:PlasticRest:Url");
+            var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:PlasticRest:Url");
 
             if (!string.IsNullOrEmpty(plasticBaseUrl))
             {

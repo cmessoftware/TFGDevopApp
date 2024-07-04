@@ -1,4 +1,4 @@
-﻿@page "/code/repository/create"
+﻿@page "/code/repositories/create"
 @using Radzen
 @using Radzen.Blazor
 @using System.Globalization
@@ -12,8 +12,8 @@
     <div class="col-md-4"/>
     <div class="col-md-4">
         <StatusMessage Message="@Message" />
-          <RadzenText Style="font-family:monospace; font-size:xx-large" Text="Crear Repositorio" />
-          <EditForm Model="Repository" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="OnCreate" FormName="creteRepository">
+          <RadzenText Style="font-family:monospace; font-size:xx-large" Text="Crear Tarea" />
+          <EditForm Model="Repository" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="OnCreate" FormName="createRepository">
             <DataAnnotationsValidator />
             <hr />
             <ValidationSummary class="text-danger" role="alert" />
@@ -38,7 +38,7 @@
 
 @code {
     [SupplyParameterFromForm]
-    private CreateRepositoryRequestDto Repository { get; set; } = new();
+    private RepositoryCreateRequestDto Repository { get; set; } = new();
 
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }

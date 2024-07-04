@@ -16,7 +16,7 @@ namespace TFGDevopsApp.Mediator.Command.WorkSpaces
 
         public async Task<Result<bool>> Handle(UpdateWorkSpacesCommand request, CancellationToken cancellationToken)
         {
-            var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsApp.Web:environmentVariables:PLASTIC_API_URL");
+            var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:PLASTIC_API_URL");
             if (string.IsNullOrEmpty(plasticBaseUrl))
                 return await Task.FromResult(
                     new Result<bool>()

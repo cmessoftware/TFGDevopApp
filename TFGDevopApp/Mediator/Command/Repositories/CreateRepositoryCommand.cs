@@ -6,9 +6,9 @@ namespace TFGDevopsApp.Mediator.Command.Repositories
 {
     public class CreateRepositoryCommand : IRequest<Result<CreateRepositoryResponseDto>>
     {
-        public CreateRepositoryRequestDto Repository { get; set; }
+        public RepositoryCreateRequestDto Repository { get; set; }
 
-        public CreateRepositoryCommand(CreateRepositoryRequestDto repository)
+        public CreateRepositoryCommand(RepositoryCreateRequestDto repository)
         {
             repository.CreationDate = DateTime.Now;
             Repository = repository;

@@ -1,12 +1,15 @@
-﻿using TFGDevopsApp.Core.Models.Result;
+﻿using TFGDevopsApp.Core.Helpers;
+using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dtos.Mantis.Issues;
 
 namespace TFGDevopsApp.Interfaces
 {
     public interface IMantisServices
     {
-        Task<Result<TaskResponseDto>> GetTaskById(string path, int id);
-        Task<Result<TaskResponseDto>> CreateTask(TaskRequestDto request);
+        Task<Result<Issue>> GetTaskById(string path, int id);
+        Task<Result<Issue>> CreateTask(Issue request);
         Task<Result<TaskResponseDto>> GetTasks(string path);
-        Task<Result<TaskResponseDto>> UpdateTask(TaskRequestDto request);
+        Task<Result<List<Category>>> GetCategories();
+        Task<Result<TaskCreateResponseDto>> UpdateTask(TaskCreateRequestDto request);
     }
 }

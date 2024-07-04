@@ -17,12 +17,12 @@ namespace TFGDevopsApp.Mediator.Command.Repositories
         public async Task<Result<CreateRepositoryResponseDto>> Handle(CreateRepositoryCommand request, CancellationToken cancellationToken)
         {
             CreateRepositoryResponseDto response = new();
-            var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsTools.Server:environmentVariables:PlasticRest:Url");
+            var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:PlasticRest:Url");
 
             if (!string.IsNullOrEmpty(plasticBaseUrl))
             {
                 var url = $"{plasticBaseUrl}api/v1/repos";
-                response = RestClientHelper.Post<CreateRepositoryResponseDto, CreateRepositoryRequestDto>(url, request.Repository);
+                response = RestClientHelper.Post<CreateRepositoryResponseDto, RepositoryCreateRequestDto>(url, request.Repository);
             }
 
 

@@ -31,7 +31,7 @@ namespace TFGDevopsApp.Services
         {
             try
             {
-                var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsTools.Server:environmentVariables:PlasticRest:Url");
+                var plasticBaseUrl = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:PlasticRest:Url");
                 var url = $"{plasticBaseUrl}{path}/branches/main/contents";
                 var directories = await RestClientHelper.GetAsync<DirectoryItemDto>(url);
 

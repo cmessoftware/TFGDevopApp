@@ -1,10 +1,10 @@
 ﻿using MediatR;
-using TFGDevopsApp.Common.Helpers;
+using TFGDevopsApp.Core.Helpers;
 using TFGDevopsApp.Core.Models.Result;
 
 namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
 {
-    public class GetTaskByIdQueryHandler : IRequestHandler<GetTaskByIdQuery, Result<TaskResponseDto>>
+    public class GetTaskByIdQueryHandler : IRequestHandler<GetTaskByIdQuery, Result<Issue>>
     {
         private readonly IConfiguration _configuration;
 
@@ -13,26 +13,26 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             _configuration = configuration;
         }
 
-        public async Task<Result<TaskResponseDto>> Handle(GetTaskByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<Issue>> Handle(GetTaskByIdQuery request, CancellationToken cancellationToken)
         {
-            TaskResponseDto response = null;
-            var mantisBaseUrl = _configuration.GetValue<string>("profiles:TFGDevopsTools.Server:environmentVariables:MantisRest:Url");
-            var authToken = _configuration.GetValue<string>("profiles:TFGDevopsTools.Server:environmentVariables:MantisRest:AuthToken");
+            Issue response = null;
+            var mantisBaseUrl = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:MantisRest:Url");
+            var authToken = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:MantisRest:AuthToken");
 
             if (!string.IsNullOrEmpty(mantisBaseUrl))
             {
                 var url = $"{mantisBaseUrl}{request.Path}/{request.Id}";
-                response = await RestClientHelper.SecurityGetAsync<TaskResponseDto>(url, authToken);
+               // response = await RestClientHelper.SecurityGetAsync<TaskCreateResponseDto>(url, authToken);
             }
 
 
             if (response != null)
             {
                 return await Task.FromResult(
-                    new Result<TaskResponseDto>()
+                    new Result<Issue>()
                     {
                         Data = response,
-                        Message = "Tareas encontrados",
+                        Message = "Categorias encontrados",
                         Success = true
                     });
 
@@ -40,7 +40,7 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             else
             {
                 return await Task.FromResult(
-                    new Result<TaskResponseDto>()
+                    new Result<Issue>()
                     {
                         Data = null,
                         Message = "No se encontraron issues",
