@@ -5,12 +5,12 @@ using TFGDevopsApp.Entities;
 
 namespace TFGDevopsApp.Data
 {
-    public class ApplicationDBContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
 
-        public ApplicationDBContext() { }
+        public ApplicationDbContext() { }
 
-        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 

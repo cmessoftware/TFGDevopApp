@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using TFGDevopsApp.Components.Layout
+@inherits LayoutComponentBase
 
 <div class="sidebar">
     <NavMenu />
@@ -16,7 +17,7 @@
                 @Body
             </Authorized>
             <NotAuthorized>
-                <TFGDevopsApp.Pages.Index></TFGDevopsApp.Pages.Index>
+                <Index/>
             </NotAuthorized>
         </AuthorizeView>
     </div>

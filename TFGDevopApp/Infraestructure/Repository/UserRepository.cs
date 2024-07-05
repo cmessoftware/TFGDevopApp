@@ -5,9 +5,9 @@ namespace TFGDevopsApp.Infraestructure.Repository
 {
     public class UserRepository : IUserRepository
     {
-        private readonly ApplicationDBContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public UserRepository(ApplicationDBContext context)
+        public UserRepository(ApplicationDbContext context)
         {
             _context = context;
         }

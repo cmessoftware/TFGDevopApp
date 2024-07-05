@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Radzen;
+using System.Reflection;
 using TFGDevopsApp.Infraestructure.Repository;
 using TFGDevopsApp.Services;
 
@@ -12,6 +13,8 @@ namespace TFGDevopsApp.Common.Extensions
         {
             services.AddRadzenComponents();
             services.AddAntDesign();
+            services.AddAutoMapper(typeof(Program));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddScoped<IPlasticServices, PlasticServices>();
             services.AddScoped<IFolderTreeService, FolderTreeService>();
             services.AddScoped<IFolderTreeRepository, FolderTreeRepository>();
