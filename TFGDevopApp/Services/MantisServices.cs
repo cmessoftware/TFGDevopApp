@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using TFGDevopsApp.Core.Helpers;
 using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dtos.Mantis.Category;
 using TFGDevopsApp.Dtos.Mantis.Issues;
-using TFGDevopsApp.Mediator.Command.MantisBT;
+using TFGDevopsApp.Mediator.Command.Mantis;
 using TFGDevopsApp.Mediator.Queries.Mantis.Issues;
 
 namespace TFGDevopsApp.Services
@@ -16,7 +17,7 @@ namespace TFGDevopsApp.Services
             _mediator = mediator;
         }
 
-        public async Task<Result<TaskResponseDto>> GetTasks(string path)
+        public async Task<Result<TasksResponseDto>> GetTasks(string path)
         {
             var query = new GetTaskQuery(path);
             var result = await _mediator.Send(query);
@@ -81,7 +82,7 @@ namespace TFGDevopsApp.Services
             throw new NotImplementedException();
         }
 
-        public async Task<Result<List<Category>>> GetCategories()
+        public async Task<Result<List<TaskCategoryResponseDto>>> GetCategories()
         {
             var query = new GetCategoryQuery();
             var result = await _mediator.Send(query);

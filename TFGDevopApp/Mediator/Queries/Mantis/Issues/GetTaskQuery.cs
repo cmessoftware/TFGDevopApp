@@ -4,7 +4,7 @@ using TFGDevopsApp.Dtos.Mantis.Issues;
 
 namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
 {
-    public class GetTaskQuery : IRequest<Result<TaskResponseDto>>
+    public class GetTaskQuery : IRequest<Result<TasksResponseDto>>
     {
         public string Path { get; internal set; }
         public GetTaskQuery(string path)

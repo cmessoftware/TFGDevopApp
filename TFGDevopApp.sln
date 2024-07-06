@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TFGDevopsApp", "TFGDevopApp\TFGDevopsApp.csproj", "{9F4073E3-9B26-4C2E-BDB6-E43EA3CDF7CE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TFGDevopsApp1", "..\TFGDevopsApp1\TFGDevopsApp1.csproj", "{BB1CB72F-8897-4AB8-8310-D9D31FDA23AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TFGDevopsApp1", "..\TFGDevopsApp1\TFGDevopsApp1.csproj", "{BB1CB72F-8897-4AB8-8310-D9D31FDA23AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9F4073E3-9B26-4C2E-BDB6-E43EA3CDF7CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F4073E3-9B26-4C2E-BDB6-E43EA3CDF7CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9F4073E3-9B26-4C2E-BDB6-E43EA3CDF7CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F4073E3-9B26-4C2E-BDB6-E43EA3CDF7CE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BB1CB72F-8897-4AB8-8310-D9D31FDA23AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB1CB72F-8897-4AB8-8310-D9D31FDA23AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB1CB72F-8897-4AB8-8310-D9D31FDA23AA}.Release|Any CPU.ActiveCfg = Release|Any CPU

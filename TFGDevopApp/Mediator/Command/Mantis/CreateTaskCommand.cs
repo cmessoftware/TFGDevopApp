@@ -2,7 +2,7 @@
 using TFGDevopsApp.Core.Helpers;
 using TFGDevopsApp.Core.Models.Result;
 
-namespace TFGDevopsApp.Mediator.Command.MantisBT
+namespace TFGDevopsApp.Mediator.Command.Mantis
 {
     public class CreateTaskCommand : IRequest<Result<Issue>>
     {

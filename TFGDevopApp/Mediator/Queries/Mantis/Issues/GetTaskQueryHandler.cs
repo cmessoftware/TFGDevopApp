@@ -5,7 +5,7 @@ using TFGDevopsApp.Dtos.Mantis.Issues;
 
 namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
 {
-    public class GetTaskQueryHandler : IRequestHandler<GetTaskQuery, Result<TaskResponseDto>>
+    public class GetTaskQueryHandler : IRequestHandler<GetTaskQuery, Result<TasksResponseDto>>
     {
         private readonly IConfiguration _configuration;
 
@@ -15,23 +15,23 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             this._configuration = configuration;
         }
 
-        public async Task<Result<TaskResponseDto>> Handle(GetTaskQuery request, CancellationToken cancellationToken)
+        public async Task<Result<TasksResponseDto>> Handle(GetTaskQuery request, CancellationToken cancellationToken)
         {
-            TaskResponseDto response = null;
+            TasksResponseDto response = null;
             var mantisBaseUrl = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:MantisRest:Url");
             var authToken = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:MantisRest:AuthToken");
 
             if (!string.IsNullOrEmpty(mantisBaseUrl))
             {
                 var url = $"{mantisBaseUrl}{request.Path}";
-                response = await RestClientHelper.SecurityGetAsync<TaskResponseDto>(url, authToken);
+                response = await RestClientHelper.SecurityGetAsync<TasksResponseDto>(url, authToken);
 
             }
     
             if (response != null)
             {
                 return await Task.FromResult(
-                    new Result<TaskResponseDto>()
+                    new Result<TasksResponseDto>()
                     {
                         Data = response,
                         Message = "Tareas encontrados",
@@ -42,7 +42,7 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             else
             {
                 return await Task.FromResult(
-                    new Result<TaskResponseDto>()
+                    new Result<TasksResponseDto>()
                     {
                         Data = null,
                         Message = "No se encontraron tareas",

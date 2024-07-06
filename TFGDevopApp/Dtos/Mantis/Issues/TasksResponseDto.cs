@@ -1,8 +1,8 @@
 ﻿using TFGDevopsApp.Core.Helpers;
 
-namespace TFGDevopsApp.Models.Mantis
+namespace TFGDevopsApp.Dtos.Mantis.Issues
 {
-    public class TaskResponseDto
+    public class TasksResponseDto
     {
         public List<Issue> Issues { get; set; }
     }

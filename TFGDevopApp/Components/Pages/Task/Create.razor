@@ -5,6 +5,7 @@
 @using TFGDevopsApp.Components.Account.Shared
 @using TFGDevopsApp.Core.Helpers
 @using TFGDevopsApp.Core.Models.Result
+@using TFGDevopsApp.Dtos.Mantis.Category
 @using TFGDevopsApp.Dtos.Plastic.Repositories
 @inject IMantisServices mantisServices
 
@@ -46,7 +47,7 @@
 
     private string Message { get; set; }
 
-    private List<Category> Categories { get; set; } = new();
+    private List<TaskCategoryResponseDto> Categories { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {

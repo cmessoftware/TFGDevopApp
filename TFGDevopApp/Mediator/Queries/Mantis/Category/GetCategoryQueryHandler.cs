@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using TFGDevopsApp.Core.Helpers;
 using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dtos.Mantis.Category;
 
 namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
 {
-    public class GetCategoryQueryHandler : IRequestHandler<GetCategoryQuery, Result<List<Category>>>
+    public class GetCategoryQueryHandler : IRequestHandler<GetCategoryQuery, Result<List<TaskCategoryResponseDto>>>
     {
         private readonly IConfiguration _configuration;
 
@@ -13,16 +14,16 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             _configuration = configuration;
         }
 
-        public async Task<Result<List<Category>>> Handle(GetCategoryQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<TaskCategoryResponseDto>>> Handle(GetCategoryQuery request, CancellationToken cancellationToken)
         {
-            List<Category> response = null;
+            List<TaskCategoryResponseDto> response = null;
            
 
 
             if (response != null)
             {
                 return await Task.FromResult(
-                    new Result<List<Category>>()
+                    new Result<List<TaskCategoryResponseDto>>()
                     {
                         Data = response,
                         Message = "Categorias encontrados",
@@ -33,7 +34,7 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             else
             {
                 return await Task.FromResult(
-                    new Result<List<Category>>()
+                    new Result<List<TaskCategoryResponseDto>>()
                     {
                         Data = null,
                         Message = "No se encontraron categorias",
@@ -41,5 +42,6 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
                     });
             }
         }
+
     }
 }
