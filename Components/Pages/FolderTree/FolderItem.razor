@@ -1,0 +1,415 @@
+﻿@page "/foldertree/folderitem/{RepoName}"
+@using BlazorMonaco.Editor
+@using Radzen
+@using AutoMapper
+@using Microsoft.Extensions.Logging
+@using TFGDevopsApp1.Common
+@using TFGDevopsApp1.Components.Account.Shared
+@using TFGDevopsApp1.Components.Pages.Code
+@using TFGDevopsApp1.Core.Helpers
+@using TFGDevopsApp1.Core.Models.Result
+@using TFGDevopsApp1.Dtos.Mantis.Issues
+@using TFGDevopsApp1.Dtos.Mantis.Project
+@using TFGDevopsApp1.Dtos.Plastic.Repositories
+@using TFGDevopsApp1.Dtos.Plastic.Workspaces
+@using TFGDevopsApp1.Interfaces
+@using System.Linq
+@using TFGDevopsApp1.Dtos.FolderTree
+@using Radzen.Blazor
+@inject IPlasticServices plasticServices
+@inject IMantisServices mantisServices
+@inject IConfiguration configuration
+@inject IMapper _mapper
+@inject ILogger<FolderItem> _logger
+@inject IJSRuntime jsRuntime
+@inject Radzen.DialogService dialogService
+
+<style>
+    .custom-dialog {
+        width: 80vw; /* Set the desired width */
+    }
+
+        .custom-dialog .rz-dialog {
+            max-width: unset; /* Override the default max-width */
+        }
+
+</style>
+
+<ErrorBoundary>
+<div class="container">
+    <StatusMessage Message="@message"></StatusMessage>
+    <div class="row">
+        <div class="col-12">
+            <div class="rz-grid-table-cell">
+             <RadzenPanel>
+                <RadzenTree Data="@FolderTrees"
+                            TextProperty="FolderTree.Name"
+                            ChildItemsProperty="FolderTree.Children"
+                            Expand=@LoadDataAsync
+                            Change=@OnNodeChange>
+                    <RadzenTreeItem Text="@RepoName">
+                        @foreach (var repo in FolderTrees)
+                        {
+                            <RadzenTreeItem Text="@repo.Name" Expand=@LoadDataAsync>
+                                @* Recursive function to display the folder tree *@
+                                @BuildTreeView(repo)
+                            </RadzenTreeItem>
+                        }
+                    </RadzenTreeItem>
+                </RadzenTree>
+            </RadzenPanel>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="rz-grid-table-cell">
+                    <RadzenPanel>
+                        <div class="row">
+                            <div class="col-6 px-5">
+                            <RadzenButton Disabled=@(IsDisabled) Text="Check In" Click="@(() => Checkin())" />
+                            </div>
+                            <div class="col-6">
+                            <RadzenButton Disabled=@(IsDisabled ? false : true) Text="Solicitar Revisión" Click="@(() => RequestRevision())" />
+                            </div>
+                        </div>
+                    </RadzenPanel>
+                </div>
+            </div>
+        </div>
+    </div>
+</ErrorBoundary>
+
+@code {
+
+    [Parameter]
+    public string RepoName { get; set; }
+
+    public string ProjectName { get; set; }
+
+    private string CodeFileContent  { get; set; }
+
+    private string CodeFileName { get; set; }
+
+    private bool IsFile { get; set; }
+
+    private bool IsDisabled { get; set; }
+
+    private string message { get; set; }
+
+    private string CurrentPath { get; set; }
+
+    private List<RepositoryWorkspace> Repositories { get; set; } = new List<RepositoryWorkspace>();
+
+    private List<FolderTree> FolderTrees { get; set; } = new();
+    private List<FolderTree> AllFolderTrees { get; set; } = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // var pathPlasticService = configuration.GetValue<string>(Constants.PlasticBaseUrlKey);
+        // var basePath = $"{pathPlasticService}api/v1/repos/{RepoName}";
+        // var fileBasePath = $"{basePath}/branches/main/contents";
+        // var path = fileBasePath;
+        // //var repos = await plasticServices.GetRepositoryAsync(basePath);
+        // var data = await plasticServices.GetFolderTreeAsync(path);
+        // //FolderTrees.AddRange(data.Data.Children);
+        // FolderTrees = data.Data.Children;
+        // CurrentPath = path;
+
+        // await LoadDataAsync(new TreeExpandEventArgs() { Value = FolderTrees });
+        //LoadSubTrees(FolderTrees, null);
+    }
+
+    private async Task ShowConfirmDialog(string title, string message)
+    {
+     var result = await dialogService.OpenAsync(title, ds =>
+    @<RadzenStack Gap="1.5rem">
+        <p>@message</p>
+        <RadzenStack Orientation="Orientation.Horizontal" 
+                     Gap="0.5rem" 
+                     AlignItems="AlignItems.Center" 
+                     JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenStack Orientation="Orientation.Horizontal">
+                <RadzenButton Text="Ok" Click="() => ds.Close(true)" Style="width: 80px;" />
+                <RadzenButton Text="Cancel" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
+            </RadzenStack>
+            <RadzenButton Text="Refresh" Click="(() =>  ds.Refresh())" ButtonStyle="ButtonStyle.Light" />
+        </RadzenStack>
+    </RadzenStack>);
+    }
+
+    public async Task ShowCode()
+    {
+        await dialogService.OpenAsync(CodeFileName, ds =>
+
+        @<div class="code-dialog-content">
+          <StandaloneCodeEditor Id = "codeReviewId"
+            ConstructionOptions = "EditorConstructionOptions" />
+             <div class="rz-p-12 rz-text-align-center" style="width:max-content">
+               <RadzenText>@CodeFileName</RadzenText>
+                <pre>
+                   <code class="language-csharp">
+                       @CodeFileContent
+                     </code>
+                 </pre>
+                 <RadzenButton Text = "Close" ButtonStyle="ButtonStyle.Secondary" Click=@Close /> 
+             </div>
+          </div>
+    ,
+          new Radzen.DialogOptions()    
+          {
+              CssClass = "language-csharp custom-dialog"
+          });
+    }
+
+    private void RequestRevision()
+    {
+        IsDisabled = !IsDisabled;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await jsRuntime.InvokeVoidAsync("Prism.highlightAll");
+    }
+
+    private async Task Checkin()
+    {
+        var request = new TaskProjectRequestDto()
+        {
+            Name = RepoName, //Asumismo que el nombre del proyecto en mantis es igual al nombre del repositorio.
+            Path = "projects"
+        };
+
+        //Obtengo el id del proyecto en mantis.
+        //var project = await mantisServices.GetProjectByNameAsync(request);
+
+        // if (!project.Success)
+        // {
+        //     message = $"Error en buscar proyecto {RepoName} en mantis";
+        //     return;
+        // }
+
+        //Creo una tara asociada en mantis.
+        string path = "issues";
+        var task = new TaskCreateRequestDto(new Issue
+            {
+                Summary = "Checkin",
+                Description = $"Checkin repositorio {RepoName} ",
+                Project = new Identifier() { Name = "EjemploTFG" },
+                Category = new Identifier() { Name = "General" },
+                Priority = new Identifier() { Name = "normal" },
+                Severity = new Identifier() { Name = "minor" },
+                CustomFields = new List<IssueCustomField>()
+                {
+                  new IssueCustomField()
+                  {
+                      Field = new Field() { Name = "changeSetId" },
+                      Value = 123456
+                  }
+                }
+            }
+        );
+
+        var response = await mantisServices.CreateTaskAsync(task,path);
+
+        if (response != null && response.Success)
+            message = $"Tarea {response?.Data?.Issue.Id}-{response?.Data?.Issue.Summary} creada correctamente";
+        else
+            message = $"Error al crear la tarea: {response?.Message}";
+
+        //IsDisabled = !IsDisabled;
+    }
+
+
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+            {
+                AutomaticLayout = true,
+                Language = "csharp",
+                Value = CodeFileContent
+            };
+    }
+
+    private void Close()
+    {
+        dialogService.Close();
+    }
+
+    private void LoadSubTrees(List<FolderTree> nodes, int? RequestRevisionId)
+    {
+        // Get all nodes that are children of the current parentId
+        var children = nodes.Where(x => x.RevisionId == RequestRevisionId).ToList();
+
+        foreach (var child in children)
+        {
+            // Recursively load subtrees for each child
+            LoadSubTrees(nodes, child.RevisionId);
+
+            // Find the parent node and add this child to its Children list
+            var parent = nodes.FirstOrDefault(x => x.Id == RequestRevisionId);
+            if (parent != null)
+            {
+                parent.Children.Add(child);
+            }
+        }
+    }
+
+
+
+    private bool ExcludeFiles(string path, List<string>? excludeFiles)
+    {
+        bool result = excludeFiles.Exists(x => path.Contains(x));
+        return result;
+    }
+
+    private RenderFragment BuildTreeView(FolderTree tree) => builder =>
+     {
+         builder.OpenComponent<RadzenTreeItem>(0);
+         builder.AddAttribute(1, "Text", tree.Path);
+         builder.AddAttribute(2, "Value", tree);
+         builder.AddAttribute(3, "Expand", EventCallback.Factory.Create<TreeExpandEventArgs>(this, LoadDataAsync));
+         //builder.AddAttribute(4, "Selected", EventCallback.Factory.Create<TreeEventArgs>(this, OnNodeSelected));
+         int sequence = 5;
+         if (tree.Children != null && tree.Children.Count > 0)
+         {
+             builder.AddAttribute(4, "ChildContent", (RenderFragment)((builder2) =>
+             {
+                 foreach (var child in tree.Children)
+                 {
+                     builder2.AddContent(sequence++, BuildTreeView(child));
+                 }
+             }));
+         }
+
+         builder.CloseComponent();
+     };
+
+
+    private async Task LoadDataAsync(TreeExpandEventArgs args)
+    {
+        var items = args.Value as List<FolderTree>;
+
+        if (items == null)
+            return;
+
+        foreach(var item in items)
+        {
+            // Perform the necessary action when the tree item is expanded
+            if ( item == null ||  item.Children.Count == 0)
+            {
+                item.Children = await LoadChildrenAsync(item); 
+            }
+        }
+       
+    }
+
+    private async void OnNodeChange(TreeEventArgs args)
+    {
+        FolderTree selectedNode = args.Value as FolderTree;
+
+        if (selectedNode != null)
+        {
+            var currentTree = await LoadChildrenAsync(selectedNode);
+
+            FolderTrees = currentTree;
+        }
+    }
+
+
+    private async void OnNodeSelected(TreeEventArgs args)
+    {
+        FolderTree selectedNode = args.Value as FolderTree;
+
+        if (selectedNode != null && selectedNode.Type == "file") //Is a tree leaf.
+        {
+            var content = await GetFileContentAsync(selectedNode);
+            FolderTrees = new List<FolderTree>()
+            {
+                new FolderTree()
+                {
+                    Path = selectedNode.Path,
+                    Name = selectedNode.Name,
+                    Type = selectedNode.Type,
+                    ParentTree = selectedNode.ParentTree,
+                    Content = content
+                }
+            };
+            IsFile = !string.IsNullOrEmpty(content);    
+            CodeFileContent = content;
+        }
+
+        if (selectedNode != null && selectedNode.Type == "directory")
+        {
+            var currentTree = await LoadChildrenAsync(selectedNode);
+            FolderTrees = currentTree;
+            CurrentPath += selectedNode.Children.Count != 0 ? selectedNode.Path : string.Empty;
+            _logger.LogError($"CurrentPath: {CurrentPath}");
+        }
+    }
+
+    private void OnNodeExpand(TreeExpandEventArgs args)
+    {
+        var expandedNode = args.Value as FolderTree;
+        if (expandedNode != null)
+        {
+            // Handle the node expand event
+            Console.WriteLine($"Expanded node: {expandedNode.Name}");
+        }
+    }
+
+    private async Task<string> GetFileContentAsync(FolderTree item)
+    {
+        var pathPlasticService = configuration.GetValue<string>(Constants.PlasticBaseUrlKey);
+        var basePath = $"{pathPlasticService}api/v1/repos/{RepoName}";
+        var fileBasePath = $"{basePath}/branches/main/contents";
+        string path;
+        if(!item.Path.Contains(RepoName))
+            path = $"{fileBasePath}{item.Path}";
+        else
+            path = $"{fileBasePath}";
+
+        var fileContent = await plasticServices.GetFolderTreeAsync(path);
+        if (!string.IsNullOrEmpty(fileContent.Data.Content))
+        {
+            var codeContent = await plasticServices.GetFileContentAsyc(fileContent.Data.Content);
+            return await Task.FromResult(codeContent);
+        }
+
+        return await Task.FromResult(string.Empty);
+    }
+
+    private async Task<List<FolderTree>> LoadChildrenAsync(FolderTree item)
+    {
+        Result<FolderTree> folderTree = new Result<FolderTree>();
+
+        if (item != null)
+        {
+            var pathPlasticService = configuration.GetValue<string>(Constants.PlasticBaseUrlKey);
+            var basePath = $"{pathPlasticService}api/v1/repos/{RepoName}";
+            var fileBasePath = $"{basePath}/branches/main/contents";
+            string path = $"{fileBasePath}{item.Path}";
+
+            folderTree = await plasticServices.GetFolderTreeAsync(path);
+            IsFile = folderTree.Data.Type == "file";
+            if (IsFile)
+            {
+                CodeFileContent = await plasticServices.GetFileContentAsyc(folderTree.Data.Content);
+                CodeFileName = folderTree.Data.Name;
+                await ShowCode();
+            }
+        }
+        else
+            folderTree =  await Task.FromResult(folderTree);
+
+        return folderTree?.Data.Children;
+    }
+  
+    private class RepositoryWorkspace
+    {
+        public RepositoryResponseDto Repository { get; set; }
+        public WorkspaceResponseDto Workspace { get; set; }
+        public FolderTree Tree { get; set; }
+    }
+}

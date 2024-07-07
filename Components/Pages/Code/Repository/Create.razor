@@ -1,0 +1,67 @@
+﻿@page "/code/repositories/create"
+@using Radzen
+@using Radzen.Blazor
+@using System.Globalization
+@using TFGDevopsApp1.Components.Account.Shared
+@using TFGDevopsApp1.Core.Models.Result
+@using TFGDevopsApp1.Dtos.Plastic.Repositories
+@using TFGDevopsApp1.Interfaces
+@inject IPlasticServices plasticServices
+
+<ErrorBoundary>
+<div class="row">
+    <div class="col-md-4"/>
+    <div class="col-md-4">
+        <StatusMessage Message="@Message" />
+          <RadzenText Style="font-family:monospace; font-size:xx-large" Text="Crear Tarea" />
+          <EditForm Model="Repository" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="OnCreate" FormName="createRepository">
+            <DataAnnotationsValidator />
+            <hr />
+            <ValidationSummary class="text-danger" role="alert" />
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Repository.Name" class="form-control" autocomplete="name" aria-required="true" placeholder="Nombre repositorio" />
+                    <label for="name">Name</label>
+                    <ValidationMessage For="() => Repository.Name" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                    <InputText @bind-Value="Repository.Comment" class="form-control" autocomplete="comment" aria-required="true" placeholder="comment" />
+                    <label for="comment">comment</label>
+                    <ValidationMessage For="() => Repository.Comment" class="text-danger" />
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Crear</button>
+        </EditForm>
+    </div>
+    <div class="col-md-4"/>
+</div>
+</ErrorBoundary>
+
+
+
+@code {
+    [SupplyParameterFromForm]
+    private RepositoryCreateRequestDto Repository { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private string Message { get; set; }
+
+    private async Task OnCreate()
+    {
+        var response = new Result<CreateRepositoryResponseDto>();
+
+        try
+        {
+            response = await plasticServices.CreateRepositoryAsync(Repository);
+
+            if (response != null && response.Data != null)
+                Message = response.Message;
+        }
+        catch (Exception ex)
+        {
+            Message = "Error: " + response.Message + " - " + ex.Message + "-" + 
+                      ex.InnerException?.Message; 
+        }
+    }
+
+}

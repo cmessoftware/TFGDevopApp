@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\TFGDevopsApp1.props" />
+</Project>
