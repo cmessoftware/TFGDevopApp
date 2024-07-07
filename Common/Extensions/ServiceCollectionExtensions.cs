@@ -23,7 +23,7 @@ namespace TFGDevopsApp1.Common.Extensions
             services.AddRadzenComponents();
             services.AddAntDesign();
             services.AddAutoMapper(typeof(Program));
-          //  services.AddScoped<IMantisHTTPClient, MantisHTTPClient>();
+            services.AddSingleton<ExecutableService>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddScoped<IPlasticServices, PlasticServices>();
             services.AddScoped<IFolderTreeService, FolderTreeService>();

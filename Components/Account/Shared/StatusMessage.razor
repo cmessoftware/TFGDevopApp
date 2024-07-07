@@ -12,6 +12,9 @@
     [Parameter]
     public string? Message { get; set; }
 
+    [Parameter]
+    public string Style { get; set; } = "margin-top: 10px;";
+
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 

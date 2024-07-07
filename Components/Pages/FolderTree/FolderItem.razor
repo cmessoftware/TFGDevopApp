@@ -16,8 +16,10 @@
 @using System.Linq
 @using TFGDevopsApp1.Dtos.FolderTree
 @using Radzen.Blazor
+@using TFGDevopsApp1.Services
 @inject IPlasticServices plasticServices
 @inject IMantisServices mantisServices
+@inject ExecutableService executableService
 @inject IConfiguration configuration
 @inject IMapper _mapper
 @inject ILogger<FolderItem> _logger
@@ -42,7 +44,8 @@
         <div class="col-12">
             <div class="rz-grid-table-cell">
              <RadzenPanel>
-                <RadzenTree Data="@FolderTrees"
+                 <RadzenButton ButtonStyle="ButtonStyle.Light" Click="@(path => OpenProject(""))">Abrir proyecto @RepoName</RadzenButton>
+                @* <RadzenTree Data="@FolderTrees"
                             TextProperty="FolderTree.Name"
                             ChildItemsProperty="FolderTree.Children"
                             Expand=@LoadDataAsync
@@ -51,12 +54,12 @@
                         @foreach (var repo in FolderTrees)
                         {
                             <RadzenTreeItem Text="@repo.Name" Expand=@LoadDataAsync>
-                                @* Recursive function to display the folder tree *@
+                                @* Recursive function to display the folder tree
                                 @BuildTreeView(repo)
                             </RadzenTreeItem>
                         }
                     </RadzenTreeItem>
-                </RadzenTree>
+                </RadzenTree>  *@
             </RadzenPanel>
             </div>
         </div>
@@ -107,18 +110,6 @@
     {
         await base.OnInitializedAsync();
 
-        // var pathPlasticService = configuration.GetValue<string>(Constants.PlasticBaseUrlKey);
-        // var basePath = $"{pathPlasticService}api/v1/repos/{RepoName}";
-        // var fileBasePath = $"{basePath}/branches/main/contents";
-        // var path = fileBasePath;
-        // //var repos = await plasticServices.GetRepositoryAsync(basePath);
-        // var data = await plasticServices.GetFolderTreeAsync(path);
-        // //FolderTrees.AddRange(data.Data.Children);
-        // FolderTrees = data.Data.Children;
-        // CurrentPath = path;
-
-        // await LoadDataAsync(new TreeExpandEventArgs() { Value = FolderTrees });
-        //LoadSubTrees(FolderTrees, null);
     }
 
     private async Task ShowConfirmDialog(string title, string message)
@@ -181,15 +172,6 @@
             Path = "projects"
         };
 
-        //Obtengo el id del proyecto en mantis.
-        //var project = await mantisServices.GetProjectByNameAsync(request);
-
-        // if (!project.Success)
-        // {
-        //     message = $"Error en buscar proyecto {RepoName} en mantis";
-        //     return;
-        // }
-
         //Creo una tara asociada en mantis.
         string path = "issues";
         var task = new TaskCreateRequestDto(new Issue
@@ -221,7 +203,50 @@
         //IsDisabled = !IsDisabled;
     }
 
+    private async Task OpenProject(string? path)
+    {
+        try
+        {
+            message = string.Empty;
+            string branch = "main";
+            string executable = "devenv";
+            var pathPlasticService = configuration.GetValue<string>(Constants.PlasticBaseUrlKey);
+            var workspace = plasticServices.GetWorkSpaceByNameAsync("api/v1/wkspaces",RepoName);
+            string phisicalPath = workspace?.Result?.Data?.Path;
 
+            var basePath = $"{pathPlasticService}api/v1/repos/{RepoName}";
+            string nextPath = string.Empty;
+
+            if(string.IsNullOrEmpty(path))
+                path = $"{basePath}/branches/{branch}/contents";
+            else
+                path = $"{basePath}/branches/{branch}/contents{path}";
+
+            var folders = await plasticServices.GetFolderTreeAsync(path);
+
+
+            foreach (var folder in folders.Data.Children)
+            {
+                if (folder.Path.EndsWith(".sln") && folder.Type == "file")
+                {
+                    string executeablePath = $"{(phisicalPath + folder.Path).Replace("/", "\\")}";
+                    executableService.ExecuteAsync(executable, $@"{phisicalPath}{folder.Path}");
+                }
+
+                nextPath = folder.Path;
+            }
+
+            await OpenProject(nextPath);
+
+            message = $"Error: Proyecto {RepoName} no contiene archivo de solución";
+        }
+        catch (Exception ex)
+        {
+            message = $"Error: {ex.Message}";
+        }
+    }
+
+ 
     private StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
     {
         return new StandaloneEditorConstructionOptions

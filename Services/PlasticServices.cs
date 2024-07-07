@@ -150,6 +150,21 @@ namespace TFGDevopsApp1.Services
             }
         }
 
+        public async Task<Result<WorkspaceResponseDto>> GetWorkSpaceByNameAsync(string path, string name)
+        {
+            var query = new GetWorkSpaceQuery(path, name);
+            var result = await _mediator.Send(query);
+
+            if (result != null)
+            {
+                return await Task.FromResult(result);
+            }
+            else
+            {
+                return result;
+            }
+        }
+
         public async Task<Result<List<WorkspaceResponseDto>>> GetWorkSpacesAsync(string path)
         {
             var query = new GetWorkSpacesQuery(path);

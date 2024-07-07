@@ -19,6 +19,7 @@ namespace TFGDevopsApp1.Interfaces
         Task<Result<RepositoryResponseDto>> GetRepositoryAsync(string path);
         Task<Result<List<RepositoryResponseDto>>> GetRepositoriesAsync(string path);
         Task<Result<List<WorkspaceResponseDto>>> GetWorkSpacesAsync(string path);
+        Task<Result<WorkspaceResponseDto>> GetWorkSpaceByNameAsync(string path, string name);
         Task<Result<List<ChangeSetResponseDto>>> GetChangeSetsAsync(string path);
 
     }

@@ -203,3 +203,4 @@ C:\Users\CFO Tech\source\repos\TFGPlastic\TFGDevopsApp\TFGDevopsApp1\obj\Debug\n
 C:\Users\CFO Tech\source\repos\TFGPlastic\TFGDevopsApp\TFGDevopsApp1\obj\Debug\net8.0\jsmodules\jsmodules.build.manifest.json
 C:\Users\CFO Tech\source\repos\TFGPlastic\TFGDevopsApp\TFGDevopsApp1\bin\Debug\net8.0\Refit.dll
 C:\Users\CFO Tech\source\repos\TFGPlastic\TFGDevopsApp\TFGDevopsApp1\bin\Debug\net8.0\Refit.HttpClientFactory.dll
+C:\Users\CFO Tech\source\repos\TFGPlastic\TFGDevopsApp\TFGDevopsApp1\obj\Debug\net8.0\TFGDevopsApp1.sourcelink.json
