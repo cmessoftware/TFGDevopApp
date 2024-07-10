@@ -12,6 +12,7 @@
 @using TFGDevopsApp1.Dtos.Mantis.Project
 @using TFGDevopsApp1.Dtos.Plastic.Repositories
 @using TFGDevopsApp1.Dtos.Plastic.Workspaces
+@using TFGDevopsApp1.Infraestructure.Entity.Mantis
 @using TFGDevopsApp1.Interfaces
 @using System.Linq
 @using TFGDevopsApp1.Dtos.FolderTree
@@ -19,6 +20,7 @@
 @using TFGDevopsApp1.Services
 @inject IPlasticServices plasticServices
 @inject IMantisServices mantisServices
+@inject IIssueRepository issueRepository    
 @inject ExecutableService executableService
 @inject IConfiguration configuration
 @inject IMapper _mapper
@@ -38,14 +40,21 @@
 </style>
 
 <ErrorBoundary>
-<div class="container">
+   @*  <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12" Gap="2rem">
+        <RadzenProgressBarCircular @bind-Value="@value" />
+        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">ProgressBarCircular with <strong>ProgressBarStyle</strong> property</RadzenText>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Wrap="FlexWrap.Wrap">
+            <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Light" @bind-Value="@value" />
+        </RadzenStack>
+    </RadzenStack> *@
+    <div class="container">
     <StatusMessage Message="@message"></StatusMessage>
     <div class="row">
         <div class="col-12">
             <div class="rz-grid-table-cell">
              <RadzenPanel>
-                 <RadzenButton ButtonStyle="ButtonStyle.Light" Click="@(path => OpenProject(""))">Abrir proyecto @RepoName</RadzenButton>
-                @* <RadzenTree Data="@FolderTrees"
+                <RadzenButton ButtonStyle="ButtonStyle.Light" Click="@(path => OpenProject(""))">Abrir proyecto @RepoName</RadzenButton>
+           @*      <RadzenTree Data="@FolderTrees"
                             TextProperty="FolderTree.Name"
                             ChildItemsProperty="FolderTree.Children"
                             Expand=@LoadDataAsync
@@ -54,7 +63,6 @@
                         @foreach (var repo in FolderTrees)
                         {
                             <RadzenTreeItem Text="@repo.Name" Expand=@LoadDataAsync>
-                                @* Recursive function to display the folder tree
                                 @BuildTreeView(repo)
                             </RadzenTreeItem>
                         }
@@ -187,7 +195,7 @@
                   new IssueCustomField()
                   {
                       Field = new Field() { Name = "changeSetId" },
-                      Value = 123456
+                      Value = new Random().Next(1, 10000)
                   }
                 }
             }
@@ -196,7 +204,23 @@
         var response = await mantisServices.CreateTaskAsync(task,path);
 
         if (response != null && response.Success)
-            message = $"Tarea {response?.Data?.Issue.Id}-{response?.Data?.Issue.Summary} creada correctamente";
+        {
+            var issue = response.Data?.Issue;
+            var changeSetIdField = issue?.CustomFields?.FirstOrDefault(x => x.Field.Name == "changeSetId");
+            var changeSetIdValue = changeSetIdField?.Value?.ToString() ?? "unknown";
+
+            message = $"Tarea {issue?.Id} - {issue?.Summary} creada correctamente (changeSetId {changeSetIdValue})";
+
+            // Registro la tarea en el repositorio.
+            var result = await issueRepository.CreateAsync(new IssueEntity()
+            {
+                IssueId = issue?.Id,
+                Summary = issue?.Summary,
+                Description = issue?.Description,
+
+            });
+
+        }
         else
             message = $"Error al crear la tarea: {response?.Message}";
 
@@ -213,6 +237,7 @@
             var pathPlasticService = configuration.GetValue<string>(Constants.PlasticBaseUrlKey);
             var workspace = plasticServices.GetWorkSpaceByNameAsync("api/v1/wkspaces",RepoName);
             string phisicalPath = workspace?.Result?.Data?.Path;
+            bool launched = false;
 
             var basePath = $"{pathPlasticService}api/v1/repos/{RepoName}";
             string nextPath = string.Empty;
@@ -224,13 +249,16 @@
 
             var folders = await plasticServices.GetFolderTreeAsync(path);
 
-
+            
             foreach (var folder in folders.Data.Children)
             {
                 if (folder.Path.EndsWith(".sln") && folder.Type == "file")
                 {
                     string executeablePath = $"{(phisicalPath + folder.Path).Replace("/", "\\")}";
                     executableService.ExecuteAsync(executable, $@"{phisicalPath}{folder.Path}");
+                    message = $"Proyecto {RepoName} levantado en Visual Studio";
+                    launched = true;
+                    return;
                 }
 
                 nextPath = folder.Path;
@@ -238,7 +266,8 @@
 
             await OpenProject(nextPath);
 
-            message = $"Error: Proyecto {RepoName} no contiene archivo de solución";
+            if(!launched)
+                message = $"Error: Proyecto {RepoName} no contiene archivo de solución";
         }
         catch (Exception ex)
         {

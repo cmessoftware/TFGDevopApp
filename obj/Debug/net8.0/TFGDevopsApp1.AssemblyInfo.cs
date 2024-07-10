@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TFGDevopsApp1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+567087ede9e004421b0b642beb9436fd5ba4e43b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09cbf80cc2c40f6fabcc28222017ac3a53a502b8")]
 [assembly: System.Reflection.AssemblyProductAttribute("TFGDevopsApp1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TFGDevopsApp1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

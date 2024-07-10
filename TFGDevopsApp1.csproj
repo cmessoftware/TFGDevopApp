@@ -122,10 +122,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infraestructure\Entity\Mantis\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\open-iconic\FONT-LICENSE" />
     <None Include="wwwroot\open-iconic\font\fonts\open-iconic.svg" />
     <None Include="wwwroot\open-iconic\ICON-LICENSE" />
