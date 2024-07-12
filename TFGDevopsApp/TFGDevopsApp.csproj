@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,11 +7,32 @@
     <UserSecretsId>aspnet-TFGDevopsApp-d0a139fc-4d04-4b09-b5fb-331738255a0e</UserSecretsId>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.6" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AntDesign" Version="0.19.4" />
+		<PackageReference Include="MediatR" Version="12.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6" />
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="BlazorMonaco" Version="3.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="6.0.32" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Razor" Version="6.0.32" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Radzen.Blazor" Version="4.34.0" />
+		<PackageReference Include="RestSharp" Version="111.4.0" />
+		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.7" />
+		<PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+	</ItemGroup> 
 
 </Project>
