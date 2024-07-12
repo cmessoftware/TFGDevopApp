@@ -1,13 +1,10 @@
 ﻿@page "/Account/Register"
-@rendermode InteractiveServer
 
 @using System.ComponentModel.DataAnnotations
 @using System.Text
 @using System.Text.Encodings.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-@using Radzen
-@using Radzen.Blazor
 @using TFGDevopsApp.Data
 
 @inject UserManager<ApplicationUser> UserManager
@@ -20,42 +17,35 @@
 
 <PageTitle>Register</PageTitle>
 
-<h3>Register</h3>
+<h1>Register</h1>
 
-    <RadzenCard Data="@Input" class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
+<div class="row">
+    <div class="col-md-4">
         <StatusMessage Message="@Message" />
-        <RadzenTemplateForm Data=@Input asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-            <RadzenFieldset>
-                <RadzenRow>
-                    <RadzenField Label="Email">
-                        <RadzenText>Email</RadzenText>
-                        <RadzenTextBox @bind-Value="Input.Email" Name="Email" />
-                        <RadzenRequiredValidator Component="Input" Property="Email" Text="Email is required." />
-                        <RadzenEmailValidator Component="Input" Property="Email" Text="Email is not valid." />
-                    </RadzenField>
-                </RadzenRow>
-                <RadzenRow>
-                <RadzenField Label="Password">
-                    <RadzenText>Password</RadzenText>
-                    <RadzenPassword @bind-Value="Input.Password" Name="Password" />
-                    <RadzenRequiredValidator Component="Input" Property="Password" Text="Password is required." />
-                    <RadzenStringLengthValidator Component="Input" Property="Password" Min="6" Max="10" Text="Password must be at least 6 and at max 10 characters long." />
-                </RadzenField>
-                </RadzenRow>
-                <RadzenRow>
-                <RadzenField Label="Confirm Password">
-                    <RadzenText>Confirm Password</RadzenText>
-                    <RadzenPassword @bind-Value="Input.ConfirmPassword" Name="ConfirmPassword" />
-                    <RadzenCompareValidator Component="Input" Property="ConfirmPassword" CompareProperty="Password" Text="The password and confirmation password do not match." />
-                </RadzenField>
-                </RadzenRow>
-                <RadzenStack Gap="10"/>
-                <RadzenRow>
-                    <RadzenButton Click="RegisterUser" ButtonType="ButtonType.Submit" Text="Register" />
-                </RadzenRow>
-            </RadzenFieldset>
-        </RadzenTemplateForm>
-  </RadzenCard>
+        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+            <DataAnnotationsValidator />
+            <h2>Create a new account.</h2>
+            <hr />
+            <ValidationSummary class="text-danger" role="alert" />
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label for="email">Email</label>
+                <ValidationMessage For="() => Input.Email" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label for="password">Password</label>
+                <ValidationMessage For="() => Input.Password" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label for="confirm-password">Confirm Password</label>
+                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+        </EditForm>
+    </div>
+</div>
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
@@ -66,11 +56,9 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
-    private bool rememberMe;
-
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
-    public async Task RegisterUser()
+    public async Task RegisterUser(EditContext editContext)
     {
         var user = CreateUser();
 
@@ -107,11 +95,6 @@
         RedirectManager.RedirectTo(ReturnUrl);
     }
 
-    private void OnLogin()
-    {
-        RedirectManager.RedirectTo("Account/Login");
-    }
-
     private ApplicationUser CreateUser()
     {
         try
@@ -144,14 +127,12 @@
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Clave")]
+        [Display(Name = "Password")]
         public string Password { get; set; } = "";
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirmar Clave")]
+        [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = "";
-
-        public bool RememberMe { get; set; }
     }
 }

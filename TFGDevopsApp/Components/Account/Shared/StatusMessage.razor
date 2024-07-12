@@ -12,6 +12,9 @@
     [Parameter]
     public string? Message { get; set; }
 
+    [Parameter]
+    public string Style { get; set; } = "margin-top: 10px;";
+
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
@@ -19,11 +22,9 @@
 
     protected override void OnInitialized()
     {
-        messageFromCookie = HttpContext != null ?
-                            HttpContext.Request.Cookies[IdentityRedirectManager.StatusCookieName] :
-                            null;
+        messageFromCookie = HttpContext?.Request?.Cookies[IdentityRedirectManager.StatusCookieName];
 
-        if (HttpContext != null && messageFromCookie is not null)
+        if (messageFromCookie is not null)
         {
             HttpContext.Response.Cookies.Delete(IdentityRedirectManager.StatusCookieName);
         }

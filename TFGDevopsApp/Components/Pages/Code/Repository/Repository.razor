@@ -1,0 +1,30 @@
+﻿@page "/code/repository/{RepoName}"
+@using TFGDevopsApp.Dtos.Plastic.Repositories
+@using TFGDevopsApp.Components.Pages.FolderTree
+@using TFGDevopsApp.Interfaces
+@using Radzen
+@using Radzen.Blazor
+@using TFGDevopsApp.Core.Models.Result
+@inject IPlasticServices plasticServices
+@inject IFolderTreeService treeService
+
+
+    <Folders RepoName = "@RepoName"/>
+
+@code {
+
+    [Parameter]
+    public string RepoName { get; set; }
+
+    [Parameter]
+    public string WorkSpaceName { get; set; }
+
+   
+
+    public List<RepositoryResponseDto> repositories { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+}

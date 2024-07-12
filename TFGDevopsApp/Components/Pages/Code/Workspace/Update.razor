@@ -1,0 +1,66 @@
+﻿@page "/code/workspace/update"
+@using Radzen
+@using Radzen.Blazor
+@using System.Globalization
+@using TFGDevopsApp.Components.Account.Shared
+@using TFGDevopsApp.Core.Models.Result
+@using TFGDevopsApp.Dto.Plastic.Workspaces
+@using TFGDevopsApp.Dtos.Plastic.Repositories
+@using TFGDevopsApp.Dtos.Plastic.Workspaces
+@using TFGDevopsApp.Interfaces
+@inject IPlasticServices plasticServices
+
+<ErrorBoundary>
+    <div class="row">
+        <div class="col-md-4" />
+        <div class="col-md-4">
+            <StatusMessage Message="@Message" />
+            <RadzenText Style="font-family:monospace; font-size:xx-large" Text="Editar WorkSpaces" />
+            <EditForm Model="WorkspaceUpdate" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="OnUpdate" FormName="EditWorkspace">
+                <DataAnnotationsValidator />
+                <hr />
+                <ValidationSummary class="text-danger" role="alert" />
+                <div class="form-floating mb-3">
+                    <InputText @bind-Value="WorkspaceUpdate.Name" class="form-control" autocomplete="name" aria-required="true" placeholder="name" />
+                    <label for="name">Name</label>
+                    <ValidationMessage For="() => WorkspaceUpdate.Name" class="text-danger" />
+                </div>
+                <div class="form-floating mb-3">
+                    <InputText @bind-Value="WorkspaceUpdate.Path" class="form-control" autocomplete="path" aria-required="true" placeholder="Path" />
+                    <label for="path">path</label>
+                    <ValidationMessage For="() => WorkspaceUpdate.Path" class="text-danger" />
+                </div>
+                <button type="submit" class="w-100 btn btn-lg btn-primary">Aceptar</button>
+            </EditForm>
+        </div>
+        <div class="col-md-4" />
+    </div>
+</ErrorBoundary>
+
+
+
+@code {
+    [SupplyParameterFromForm]
+    private EditWorkspaceRequestDto WorkspaceUpdate { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private string Message { get; set; }
+
+    private async Task OnUpdate()
+    {
+        Result<bool> response = new();
+
+        try
+        {
+            response = await plasticServices.EditWorkspaceAsync(WorkspaceUpdate);
+        }
+        catch (Exception ex)
+        {
+            Message = "Error: " + ex.Message + "-" +
+                      ex.InnerException?.Message;
+        }
+    }
+
+}
