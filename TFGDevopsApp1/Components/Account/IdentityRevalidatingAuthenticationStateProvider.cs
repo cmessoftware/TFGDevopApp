@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using TFGDevopsApp.Data;
 
-namespace TFGDevopsApp.Components.Account
+namespace TFGDevopsApp1.Components.Account
 {
     // This is a server-side AuthenticationStateProvider that revalidates the security stamp for the connected user
     // every 30 minutes an interactive circuit is connected.

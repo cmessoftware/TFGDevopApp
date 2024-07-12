@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using System.Security.Claims;
 using System.Text.Json;
-using TFGDevopsApp.Components.Account.Pages;
-using TFGDevopsApp.Components.Account.Pages.Manage;
+using TFGDevopsApp1.Components.Account.Pages;
+using TFGDevopsApp1.Components.Account.Pages.Manage;
 using TFGDevopsApp.Data;
 
 namespace Microsoft.AspNetCore.Routing

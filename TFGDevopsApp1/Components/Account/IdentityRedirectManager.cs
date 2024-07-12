@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using System.Diagnostics.CodeAnalysis;
 
-namespace TFGDevopsApp.Components.Account
+namespace TFGDevopsApp1.Components.Account
 {
     internal sealed class IdentityRedirectManager(NavigationManager navigationManager)
     {

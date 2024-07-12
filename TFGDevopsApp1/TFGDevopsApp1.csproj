@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-TFGDevopsApp1-1413c86b-33f1-4a1c-9a62-1f0b4fe77c6e</UserSecretsId>
+    <UserSecretsId>aspnet-TFGDevopsApp-1413c86b-33f1-4a1c-9a62-1f0b4fe77c6e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,9 +36,8 @@
 	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="Radzen.Blazor" Version="4.34.0" />
-	  <PackageReference Include="Refit" Version="7.1.2" />
 	  <PackageReference Include="Refit.HttpClientFactory" Version="7.1.2" />
-	  <PackageReference Include="RestSharp" Version="111.4.0" />
+	  <PackageReference Include="RestSharp" Version="106.15.0" />
 	  <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.8" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.7" />
 	  <PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using TFGDevopsApp.Data;
 
-namespace TFGDevopsApp.Components.Account
+namespace TFGDevopsApp1.Components.Account
 {
     internal sealed class IdentityUserAccessor(UserManager<ApplicationUser> userManager, IdentityRedirectManager redirectManager)
     {

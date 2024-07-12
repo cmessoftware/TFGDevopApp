@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Refit;
-using TFGDevopsApp1.Common.Extensions;
-using TFGDevopsApp1.Components;
+using TFGDevopsApp.Common.Extensions;
 using TFGDevopsApp1.Components.Account;
-using TFGDevopsApp1.Core.Helpers;
-using TFGDevopsApp1.Data;
+using TFGDevopsApp.Core.Helpers;
+using TFGDevopsApp.Data;
+using TFGDevopsApp1.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
