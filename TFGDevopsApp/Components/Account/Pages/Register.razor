@@ -3,12 +3,9 @@
 @using System.ComponentModel.DataAnnotations
 @using System.Text
 @using System.Text.Encodings.Web
-@using Microsoft.AspNetCore.Components.Forms
-@using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using Radzen.Blazor
-@using TFGDevopsApp.Components.Account.Shared
 @using TFGDevopsApp.Data
 
 @inject UserManager<ApplicationUser> UserManager
@@ -21,26 +18,15 @@
 
 <PageTitle>Register</PageTitle>
 
-<h3>Register</h3>
+<h1>Register</h1>
 
-@* <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
-    <RadzenTemplateForm Data=@Input>
-        <RadzenLogin AllowRegister="true" 
-                    AllowResetPassword="false" 
-                    Username=@Input.Email Password=@Input.Password
-                    AllowRememberMe="true" RememberMe="@rememberMe"
-                    Login=@(args => OnLogin(args))
-                    ResetPassword=@(args => OnResetPassword(args, "Login with default values"))
-                     Register=@(args => RegisterUser()) />
-    </RadzenTemplateForm>
-</RadzenCard>
- *@
 <div class="row">
+    <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
     <div class="col-md-4">
         <StatusMessage Message="@Message" />
-        <RadzenTemplateForm Data=@Input asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
             <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
+            <h2>Registrar</h2>
             <hr />
             <ValidationSummary class="text-danger" role="alert" />
             <div class="form-floating mb-3">
@@ -59,16 +45,10 @@
                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
             </div>
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </RadzenTemplateForm>
+        </EditForm>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
-    </div>
-</div>
+    </RadzenCard>
+ </div>
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
@@ -150,14 +130,12 @@
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Clave")]
+        [Display(Name = "Password")]
         public string Password { get; set; } = "";
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirmar Clave")]
+        [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = "";
-
-        public bool RememberMe { get; set; }
     }
 }
