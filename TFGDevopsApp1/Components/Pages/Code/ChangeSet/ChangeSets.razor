@@ -1,0 +1,69 @@
+﻿@page "/code/changeset/{RepositoryName}/{OptionalConstraints}"
+@using TFGDevopsApp.Dtos.Plastic.ChangeSets
+@using TFGDevopsApp.Dtos.Plastic.Workspaces
+@using TFGDevopsApp.Interfaces
+@using TFGDevopsApp.Infraestructure.Entity.Plastic
+@inject IPlasticServices plasticServices
+@inject NavigationManager NavigationManager
+
+
+@code {
+    [Parameter]
+    public string RepositoryName { get; set; }
+
+    [Parameter]
+    public string OptionalConstraints { get; set; }
+
+    private string _searchString;
+    private bool _sortNameByLength;
+    private List<string> _events = new();
+    List<ChangeSetResponseDto> changeSets;
+
+    // custom sort by name length
+    private Func<WorkspaceResponseDto, object> _sortBy => x =>
+    {
+        if (_sortNameByLength)
+            return x.Name.Length;
+        else
+            return x.Name;
+    };
+
+    // quick filter - filter globally across multiple columns with the same input
+    private Func<ChangeSetResponseDto, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Repository.name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+
+        if ($"{x.Repository.name} {x.CreationDate.ToString()}".Contains(_searchString))
+            return true;
+
+        return false;
+    };
+       
+    void SelectedItemsChanged(HashSet<ChangeSetResponseDto> items)
+    {
+        _events.Insert(0, $"Event = SelectedItemsChanged, Data = {System.Text.Json.JsonSerializer.Serialize(items)}");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        string path = string.Empty;
+        if (!string.IsNullOrEmpty(RepositoryName))
+        {
+            if (string.IsNullOrEmpty(OptionalConstraints))
+                path = $"api/v1/repos/{RepositoryName}/changesets";
+            else
+                path = $"api/v1/repos/{RepositoryName}/changesets?q={OptionalConstraints}";
+
+            var changeSet = await plasticServices.GetChangeSetsAsync(path);
+            changeSets = changeSet.Data;
+        }
+    }
+
+}

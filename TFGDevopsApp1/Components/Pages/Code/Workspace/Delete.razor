@@ -1,0 +1,42 @@
+﻿@page "/code/workspace/delete/{Name}"
+
+@using Radzen
+@using TFGDevopsApp.Components.Account.Shared
+@using TFGDevopsApp.Interfaces
+@inject IPlasticServices plasticServices
+@inject NavigationManager NavigationManager
+
+<ErrorBoundary>
+    <StatusMessage Message="@Message" />
+</ErrorBoundary>
+
+
+@code {
+
+    [Parameter]
+    public string Name { get; set; }
+
+    public string Message { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await base.OnInitializedAsync();
+            var repository = await plasticServices.RemoveWorkSpacesAsync($"api/v1/repos/{Name}");
+
+            if (repository.Data)
+            {
+                Message = "Repository removed";
+            }
+
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+        }
+
+    }
+
+}
