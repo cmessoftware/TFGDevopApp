@@ -50,6 +50,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Update="Components\_Imports.razor">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	  </Content>
 	  <Content Update="wwwroot\app.css">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
