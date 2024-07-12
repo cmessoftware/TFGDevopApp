@@ -5,6 +5,7 @@
 @using System.Text.Encodings.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
+@using Radzen.Blazor
 @using TFGDevopsApp.Data
 
 @inject UserManager<ApplicationUser> UserManager
@@ -17,12 +18,22 @@
 
 <PageTitle>Register</PageTitle>
 
-<h1>Register</h1>
+<h3>Register</h3>
 
-<div class="row">
+<RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
+    <RadzenTemplateForm Data=@Input>
+        <RadzenLogin AllowRegister="true" 
+                     AllowResetPassword="false" 
+                     Username=@Input.Email Password=@Input.Password
+                     AllowRememberMe="true" RememberMe="@rememberMe"
+                     Register=@(args => RegisterUser()) />
+    </RadzenTemplateForm>
+</RadzenCard>
+
+@* <div class="row">
     <div class="col-md-4">
         <StatusMessage Message="@Message" />
-        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+        <RadzenTemplateForm Data=@Input asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
             <DataAnnotationsValidator />
             <h2>Create a new account.</h2>
             <hr />
@@ -43,7 +54,7 @@
                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
             </div>
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </EditForm>
+        </RadzenTemplateForm>
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>
@@ -52,7 +63,7 @@
             <ExternalLoginPicker />
         </section>
     </div>
-</div>
+</div> *@
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
@@ -63,9 +74,11 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
+    private bool rememberMe;
+
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
-    public async Task RegisterUser(EditContext editContext)
+    public async Task RegisterUser()
     {
         var user = CreateUser();
 
@@ -102,6 +115,11 @@
         RedirectManager.RedirectTo(ReturnUrl);
     }
 
+    private void OnLogin()
+    {
+        RedirectManager.RedirectTo("Account/Login");
+    }
+
     private ApplicationUser CreateUser()
     {
         try
@@ -134,12 +152,14 @@
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Clave")]
         public string Password { get; set; } = "";
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
+        [Display(Name = "Confirmar Clave")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = "";
+
+        public bool RememberMe { get; set; }
     }
 }
