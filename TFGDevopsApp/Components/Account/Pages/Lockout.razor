@@ -1,8 +1,16 @@
-﻿@page "/Account/Lockout"
+﻿@page "/Account/Logout"
+@using Microsoft.AspNetCore.Identity
+@using TFGDevopsApp.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Locked out</PageTitle>
+<PageTitle>Logout</PageTitle>
 
-<header>
-    <h1 class="text-danger">Locked out</h1>
-    <p class="text-danger">This account has been locked out, please try again later.</p>
-</header>
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        await SignInManager.SignOutAsync();
+        RedirectManager.RedirectTo("/Account/Login");
+    }
+}
