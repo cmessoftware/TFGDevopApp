@@ -92,7 +92,7 @@
     {
         await base.OnInitializedAsync();
         var task = await mantisServices.GetTasksAsync("issues");
-        tasks = task.Data.Issues;
+        tasks = task.Data?.Issues;
     }
 
     private void UpdateTask(Issue task)
