@@ -27,6 +27,7 @@
 @inject ILogger<FolderItem> _logger
 @* @inject IJSRuntime jsRuntime *@
 @inject Radzen.DialogService dialogService
+@inject NavigationManager NavigationManager
 
 <style>
     .custom-dialog {
@@ -48,7 +49,12 @@
         </RadzenStack>
     </RadzenStack> *@
     <div class="container">
-    <StatusMessage Message="@message"></StatusMessage>
+    <StatusMessage Message="@message">
+           @*  @if (string.IsNullOrEmpty(issueLink))
+            {
+                <RadzenButton Click="NavigateToIssue"></RadzenButton>
+            } *@
+        </StatusMessage>
     <div class="row">
         <div class="col-12">
             <div class="rz-grid-table-cell">
@@ -108,6 +114,8 @@
 
     private string CurrentPath { get; set; }
 
+    private string issueLink { get; set; } = string.Empty;
+
     private List<RepositoryWorkspace> Repositories { get; set; } = new List<RepositoryWorkspace>();
 
     private List<FolderTree> FolderTrees { get; set; } = new();
@@ -135,7 +143,13 @@
             </RadzenStack>
             <RadzenButton Text="Refresh" Click="(() =>  ds.Refresh())" ButtonStyle="ButtonStyle.Light" />
         </RadzenStack>
-    </RadzenStack>);
+    </RadzenStack>
+       );
+    }
+
+    public void NavigateToIssue()
+    {
+        NavigationManager.NavigateTo(issueLink);
     }
 
     public async Task ShowCode()
@@ -174,11 +188,24 @@
 
     private async Task Checkin()
     {
+
+        CreatePlasticChangeSet();
+
+        CreateMantisIssue();
+    }
+
+    private async Task CreatePlasticChangeSet()
+    {
+           
+    }
+
+    private async Task CreateMantisIssue()
+    {
         var request = new TaskProjectRequestDto()
-        {
-            Name = RepoName, //Asumismo que el nombre del proyecto en mantis es igual al nombre del repositorio.
-            Path = "projects"
-        };
+            {
+                Name = RepoName, //Asumismo que el nombre del proyecto en mantis es igual al nombre del repositorio.
+                Path = "projects"
+            };
 
         //Creo una tara asociada en mantis.
         string path = "issues";
@@ -201,7 +228,7 @@
             }
         );
 
-        var response = await mantisServices.CreateTaskAsync(task,path);
+        var response = await mantisServices.CreateTaskAsync(task, path);
 
         if (response != null && response.Success)
         {
@@ -209,22 +236,24 @@
             var changeSetIdField = issue?.CustomFields?.FirstOrDefault(x => x.Field.Name == "changeSetId");
             var changeSetIdValue = changeSetIdField?.Value?.ToString() ?? "unknown";
 
+            issueLink = $"https://mantis.tfg.es/view.php?id={issue?.Id}";
+
             message = $"Tarea {issue?.Id} - {issue?.Summary} creada correctamente (changeSetId {changeSetIdValue})";
 
             // Registro la tarea en el repositorio.
             var result = await issueRepository.CreateAsync(new IssueEntity()
-            {
-                IssueId = issue?.Id,
-                Summary = issue?.Summary,
-                Description = issue?.Description,
+                {
+                    IssueId = issue?.Id,
+                    Summary = issue?.Summary,
+                    Description = issue?.Description,
 
-            });
+                });
 
         }
         else
             message = $"Error al crear la tarea: {response?.Message}";
 
-        //IsDisabled = !IsDisabled;
+        
     }
 
     private async Task OpenProject(string? path)
@@ -249,13 +278,13 @@
 
             var folders = await plasticServices.GetFolderTreeAsync(path);
 
-            
+
             foreach (var folder in folders.Data.Children)
             {
                 if (folder.Path.EndsWith(".sln") && folder.Type == "file")
                 {
                     string executeablePath = $"{(phisicalPath + folder.Path).Replace("/", "\\")}";
-                    executableService.ExecuteAsync(executable, $@"{phisicalPath}{folder.Path}");
+                    await executableService.ExecuteAsync(executable, $@"{phisicalPath}{folder.Path}");
                     message = $"Proyecto {RepoName} levantado en Visual Studio";
                     launched = true;
                     return;
@@ -266,8 +295,6 @@
 
             await OpenProject(nextPath);
 
-            if(!launched)
-                message = $"Error: Proyecto {RepoName} no contiene archivo de solución";
         }
         catch (Exception ex)
         {

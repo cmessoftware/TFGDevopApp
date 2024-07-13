@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using TFGDevopsApp.Common;
 using TFGDevopsApp.Common.Exceptions;
 using TFGDevopsApp.Common.Helpers;
 using TFGDevopsApp.Core.Helpers;
@@ -24,8 +25,8 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             {
 
                 TaskCreateResponseDto result = null;
-                var mantisBaseUrl = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:MantisRest:Url");
-                var authToken = _configuration.GetValue<string>("profiles:TFGDevops:environmentVariables:MantisRest:AuthToken");
+                var mantisBaseUrl = _configuration.GetValue<string>(Constants.MantisBaseUrl);
+                var authToken = _configuration.GetValue<string>(Constants.MantisAuthKey);
 
                 if (!string.IsNullOrEmpty(mantisBaseUrl))
                 {
