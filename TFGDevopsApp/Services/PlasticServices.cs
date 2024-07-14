@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using TFGDevopsApp.Common.Helpers;
+using TFGDevopsApp.Components.Pages.Code.Repository;
 using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Dto.Plastic.Workspaces;
 using TFGDevopsApp.Dtos.FolderTree;
+using TFGDevopsApp.Dtos.Plastic.Build;
 using TFGDevopsApp.Dtos.Plastic.ChangeSets;
 using TFGDevopsApp.Dtos.Plastic.Repositories;
 using TFGDevopsApp.Dtos.Plastic.Workspaces;
@@ -12,6 +14,7 @@ using TFGDevopsApp.Mediator.Command.WorkSpaces;
 using TFGDevopsApp.Mediator.Queries.Plastic.ChangeSets;
 using TFGDevopsApp.Mediator.Queries.Plastic.Repositories;
 using TFGDevopsApp.Mediator.Queries.Plastic.WorkSpaces;
+using TFGDevopsApp.UseCases.Contributor.Command.CodeReviewProject;
 
 namespace TFGDevopsApp.Services
 {
@@ -23,6 +26,22 @@ namespace TFGDevopsApp.Services
         {
             _mediator = mediator;
         }
+
+        public async Task<Result<BuildResponseDto>> BuildProject(string projectPath, string pathToCompile)
+        {
+            var query = new BuildProjectCommand(projectPath, pathToCompile);
+            var result = await _mediator.Send(query);
+
+            if (result != null)
+            {
+                return await Task.FromResult(result);
+            }
+            else
+            {
+                return result;
+            }
+        }
+    
 
         public async Task<Result<CreateRepositoryResponseDto>> CreateRepositoryAsync(RepositoryCreateRequestDto repository)
         {

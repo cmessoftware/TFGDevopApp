@@ -1,38 +1,46 @@
 ﻿using MediatR;
 using System.Diagnostics;
-using System.IO;
 using TFGDevopsApp.Core.Models.Result;
+using TFGDevopsApp.Dtos.Plastic.Build;
 using TFGDevopsApp.UseCases.Contributor.Command.CodeReviewProject;
 
 namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 {
-    internal class BuildProjectCommandHandler : IRequestHandler<BuildProjectCommand, Result<string>>
+    internal class BuildProjectCommandHandler : IRequestHandler<BuildProjectCommand, Result<BuildResponseDto>>
     {
 
 
-        public async Task<Result<string>> Handle(BuildProjectCommand request, CancellationToken cancellationToken)
+        public async Task<Result<BuildResponseDto>> Handle(BuildProjectCommand request, CancellationToken cancellationToken)
         {
-            var projectPath = Path.Combine(request.PathToCompile, request.RepositoryName);
+            var projectPath = request.ProjectPath;
+            string outputDirectory = string.Empty;
+            string buildId = string.Empty;
 
 
-            var projectFiles = Directory.GetFiles(projectPath, "*.csproj", SearchOption.AllDirectories);
+            var projectFiles = Directory.GetFiles(projectPath, "*.sln", SearchOption.AllDirectories);
             if (projectFiles.Length == 0)
             {
-                return await Task.FromResult(new Result<string>
+                return await Task.FromResult(new Result<BuildResponseDto>
                 {
-                    Message = $"No se encontraron proyectos .NET en el directorio especificado {projectPath}",
+                    Message = $"No se encontraron soluciones .NET en el directorio especificado {projectPath}",
                     Success = false
                 });
             }
 
             foreach (var projectFile in projectFiles)
             {
-                var pathToCompile = request.PathToCompile;
-                var outputDirectory = Path.Combine(pathToCompile, request.RepositoryName, "Compilado");
+                outputDirectory = $"{ Path.Combine(request.ProjectPath, request.PathToCompile, "Compilados")}";
+                buildId = Guid.NewGuid().ToString()[..8];
 
-                if (!Directory.Exists(outputDirectory))
-                    Directory.CreateDirectory(outputDirectory);
 
+                outputDirectory += $@"\{buildId}_{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")
+                                        .Replace(" ","-")
+                                        .Replace(":","-")
+                                        .Replace("-", "_")}";
+
+                outputDirectory = $"\"{outputDirectory}\"";
+
+         
                 Console.WriteLine($"Compilando: {projectFile} en {outputDirectory}");
 
                 var process = new Process
@@ -40,7 +48,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = "dotnet",
-                        Arguments = $@"build {projectFile} -o {outputDirectory}",
+                        Arguments = $@"build -c Release -o {outputDirectory}",
                         RedirectStandardOutput = true,
                         UseShellExecute = false,
                         CreateNoWindow = true
@@ -55,19 +63,30 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 
                 if (process.ExitCode != 0)
                 {
-                    return await Task.FromResult(new Result<string>
+                    return await Task.FromResult(new Result<BuildResponseDto>
                     {
                         Message = $"Error: {output}",
-                        Success = false
+                        Success = false,
+                        Data = new BuildResponseDto
+                        {
+                            BuildStatus = EnumStatus.Error
+                        }
                     });
                 }
 
             }
 
-            return await Task.FromResult(new Result<string>
+            return await Task.FromResult(new Result<BuildResponseDto>
             {
                 Message = "Proyecto compilado correctamente.",
-                Success = true
+                Success = true,
+                Data = new BuildResponseDto
+                {
+                    BuildStatus = EnumStatus.Success,
+                    OutputDirectory = outputDirectory,
+                    BuildDate = DateTime.Now,
+                    BuildId = Guid.NewGuid().ToString()
+                }
             });
         }
     }
