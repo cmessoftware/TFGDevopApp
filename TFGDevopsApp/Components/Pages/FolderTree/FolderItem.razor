@@ -249,6 +249,7 @@
         string pathToCompile = configuration.GetValue<string>(Constants.PathToCompile);
         var workspace = plasticServices.GetWorkSpaceByNameAsync("api/v1/wkspaces", repoName);
         string projectPath = string.Empty;
+        Result<BuildResponseDto> result = new();
 
         if (workspace == null || 
             workspace.Result == null ||
@@ -259,21 +260,26 @@
             return;
         }
         projectPath = workspace.Result.Data.Path;
-        var result = await plasticServices.BuildProject(projectPath, workspace.Result.Data.Path);
-        outputDirectory = result.Data.OutputDirectory;
 
-        if (result.Data.BuildStatus == EnumStatus.Success)
+        await Task.Run(async () =>
         {
-            message = $"Proyecto compilado correctamente en {outputDirectory}";
-            EnableOpenBuildProject = true;
-        }
-        else
-        {
-            message = "Error al compilar el proyecto";
-            EnableOpenBuildProject = false;
-        }
+            result = await plasticServices.BuildProject(projectPath, pathToCompile);
+            outputDirectory = result.Data.OutputDirectory;
+
+            if (result.Data.BuildStatus == EnumStatus.Success)
+            {
+                message = $"Proyecto compilado correctamente en {outputDirectory}";
+                EnableOpenBuildProject = true;
+            }
+            else
+            {
+                message = "Error al compilar el proyecto";
+                EnableOpenBuildProject = false;
+            }
+        });
 
         loading = false;
+
     }
 
     private async Task CreatePlasticChangeSet()
@@ -296,7 +302,7 @@
             {
                 Summary = "Checkin",
                 Description = $"Checkin repositorio {RepoName} ",
-                Project = new Identifier() { Name = "EjemploTFG" },
+                Project = new Identifier() { Name = RepoName },
                 Category = new Identifier() { Name = "General" },
                 Priority = new Identifier() { Name = "normal" },
                 Severity = new Identifier() { Name = "minor" },

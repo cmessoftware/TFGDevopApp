@@ -12,7 +12,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
 
         public async Task<Result<BuildResponseDto>> Handle(BuildProjectCommand request, CancellationToken cancellationToken)
         {
-            var projectPath = request.PathToCompile;
+            var projectPath = request.ProjectPath;
             string outputDirectory = string.Empty;
             string buildId = string.Empty;
 

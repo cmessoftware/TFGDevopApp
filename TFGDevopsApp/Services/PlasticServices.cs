@@ -27,9 +27,9 @@ namespace TFGDevopsApp.Services
             _mediator = mediator;
         }
 
-        public async Task<Result<BuildResponseDto>> BuildProject(string pojectPath, string pathToCompile)
+        public async Task<Result<BuildResponseDto>> BuildProject(string projectPath, string pathToCompile)
         {
-            var query = new BuildProjectCommand(pojectPath, pathToCompile);
+            var query = new BuildProjectCommand(projectPath, pathToCompile);
             var result = await _mediator.Send(query);
 
             if (result != null)
