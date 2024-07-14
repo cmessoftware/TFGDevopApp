@@ -12,6 +12,7 @@
 @using TFGDevopsApp.Interfaces
 @inject NavigationManager NavigationManager
 @inject IPlasticServices plasticServices
+@inject DialogService dialogService
 
 <style>
     .rz-grid-table {
@@ -24,9 +25,13 @@
         <div class="col-md-10">
             <StatusMessage Message="@Message" />
             <RadzenText Style="font-family:monospace; font-size:xx-large" Text="Workspaces" />
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10px" class="mt-2 mb-4">
-                <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Text="Crear Workspace" Click="@OnCreate" Disabled="@(editMode == DataGridEditMode.Single && workspaceToInsert.Count() > 0)" />
-              @*          <RadzenSelectBar @bind-Value="@editMode" TextProperty="Text" ValueProperty="Value" style="margin-right: 16px"
+            <RadzenStack ButtonStyle="ButtonStyle.Success" Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="10px" class="mt-2 mb-4">
+                <RadzenButton Click="@(() => OnCreate())"
+                              Icon="add_circle_outline"
+                              ButtonStyle="ButtonStyle.Success"
+                              Text="Crear Workspace" />
+                @*  <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Text="Crear Workspace" Click="@OnCreate" Disabled="@(editMode == DataGridEditMode.Single && workspaceToInsert.Count() > 0)" />
+                        <RadzenSelectBar @bind-Value="@editMode" TextProperty="Text" ValueProperty="Value" style="margin-right: 16px"
                                      Data="@(Enum.GetValues(typeof(DataGridEditMode)).Cast<DataGridEditMode>().Select(t => new { Text = $"{t}", Value = t }))" Size="Radzen.ButtonSize.Small"
                                  Disabled="@(editMode == DataGridEditMode.Multiple && workspaceToInsert.Count() > 1)" />  *@
             </RadzenStack>
@@ -118,6 +123,8 @@
 
     private string Message { get; set; }
 
+    private string WorkSpaceName { get; set; }
+
     RadzenDataGrid<WorkspaceResponseDto> WorkspaceGrid;
     DataGridEditMode editMode = DataGridEditMode.Single;
 
@@ -125,6 +132,25 @@
 
     List<WorkspaceResponseDto> workspaceToInsert = new List<WorkspaceResponseDto>();
     List<WorkspaceResponseDto> workspaceToUpdate = new List<WorkspaceResponseDto>();
+
+    public async Task OnCreate()
+    {
+    var response = new Result<bool>();
+
+    try
+    {
+            NavigationManager.NavigateTo($"/code/workspaces/create");
+        // dialogService.Open<CreateWorkSpaceDialog>($"Workspace",
+        //                      new Dictionary<string, object>() { { "Nombre", WorkSpaceName } },
+        //                      new DialogOptions() { Width = "700px", Height = "530px", Left = "calc(50% - 350px)", Top = "calc(50% - 265px)" });
+    }
+        catch (Exception ex)
+        {
+            Message = "Error: " + response.Message + " - " + ex.Message + "-" +
+                      ex.InnerException?.Message;
+        }
+    }
+
 
     void Reset()
     {
@@ -193,24 +219,4 @@
         var workspace = await plasticServices.GetWorkSpacesAsync("api/v1/wkspaces");
         WorkspacesRequest = workspace.Data;
     }
-
-    private async Task OnCreate()
-    {
-        var response = new Result<bool>();
-
-        try
-        {
-            NavigationManager.NavigateTo($"/code/workspaces/create");
-            // response = await plasticServices.CreateWorkSpaceAsync(Workspace);
-
-            // if (response.Data)
-            //     Message = response.Message;
-        }
-        catch (Exception ex)
-        {
-            Message = "Error: " + response.Message + " - " + ex.Message + "-" +
-                      ex.InnerException?.Message;
-        }
-    }
-
 }

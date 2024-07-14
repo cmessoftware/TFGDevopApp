@@ -1,0 +1,54 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using Radzen
+@using Radzen.Blazor
+@using TFGDevopsApp.Dto.Plastic.Workspaces
+@using TFGDevopsApp.Interfaces
+@inject DialogService dialogService
+@inject IPlasticServices plasticServices
+
+<RadzenStack Gap="1rem" Orientation="Orientation.Vertical" JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+    <RadzenStack>
+    <RadzenRow>
+        <RadzenColumn Size="12" SizeMD="6" Class="rz-p-4 rz-border-radius-1" Style="border: var(--rz-grid-cell-border)">
+            <RadzenText TextStyle="TextStyle.Subtitle1">Contact</RadzenText>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+                <RadzenText TextStyle="TextStyle.Overline" Class="rz-mt-2 rz-my-0" Style="color: var(--rz-text-tertiary-color);">Nombre</RadzenText>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+    </RadzenStack>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem">
+        <RadzenButton Click="@(() => CreateWorkSpace(WorkSpaceName))">Agregar Workspace</RadzenButton>
+        <RadzenButton Click="@((args) => dialogService.Close(true))" Variant="Variant.Flat" Text="Close" Style="width: 120px" />
+    </RadzenStack>
+</RadzenStack>
+
+
+@code {
+
+    [Parameter] 
+    public string WorkSpaceName { get; set; }
+
+    private string Message { get; set; }
+
+    private async Task CreateWorkSpace(string workspaceName)
+    {
+        var workspace = new WorkspaceRequestDto
+        {
+            Name = workspaceName
+        };
+
+        var response = await plasticServices.CreateWorkSpaceAsync(workspace);
+
+        if (response.Data)
+        {
+            Message = response.Message;
+        }
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+}
