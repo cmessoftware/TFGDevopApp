@@ -1,7 +1,10 @@
 ﻿@page "/code/workspaces/create"
+@rendermode InteractiveServer
+
 @using Radzen
 @using Radzen.Blazor
 @using TFGDevopsApp.Components.Account.Shared
+@using TFGDevopsApp.Dto.Plastic.Workspaces
 @using TFGDevopsApp.Dtos.Plastic.Workspaces
 @using TFGDevopsApp.Interfaces
 @using TFGDevopsApp.Services
@@ -20,42 +23,26 @@
     <StatusMessage Message="@Message" />
     <RadzenRow AlignItems="AlignItems.End" Wrap="FlexWrap.Wrap" Gap="1rem" Class="rz-p-sm-12">
         <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
-            <RadzenFormField Text="Text" Variant="Variant.Text" Style="width: 100%;">
-                <RadzenTextBox @bind-Value="@value" Style="width: 100%;" />
-            </RadzenFormField>
-        </RadzenColumn>
-        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
-            <RadzenFormField Text="Flat" Variant="Variant.Flat" Style="width: 100%;">
-                <RadzenTextBox @bind-Value="@value" Style="width: 100%;" />
-            </RadzenFormField>
-        </RadzenColumn>
-        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
-            <RadzenFormField Text="Filled" Variant="Variant.Filled" Style="width: 100%;">
-                <RadzenTextBox @bind-Value="@value" Style="width: 100%;" />
+            <RadzenFormField Text="Nombre" Variant="Variant.Text" Style="width: 100%;">
+                <RadzenTextBox @bind-Value="@WorkspaceName" Style="width: 100%;" />
             </RadzenFormField>
         </RadzenColumn>
     </RadzenRow>
-
-    @code {
-        string value = "";
-    }
-    <RadzenStack Style="mb-10">
-        <div class="mb-3">
-            <div class="row">
-                <span class="rz-button-box">
-                    <a type="submit" class="btn btn-primary" href="/code/workspace/create">
-                        <i class="rz-button-icon-center rzi">add</i>
-                        <span class="rz-button-text ">Agregar Workspace</span>
-                    </a>
-                </span>
+    <RadzenRow AlignItems="AlignItems.End" Wrap="FlexWrap.Wrap" Gap="1rem" Class="rz-p-sm-12">
+        <RadzenStack Style="mb-10">
+            <div class="mb-3">
+                <div class="row">
+                   <RadzenButton Click="@(() => CreateWorkSpace(WorkspaceName))">Agregar Workspace</RadzenButton>
+                </div>
             </div>
-        </div>
-    </RadzenStack>
+        </RadzenStack>
+    </RadzenRow>
 </ErrorBoundary>
 
 @code {
 
-    public string Name { get; set; }
+
+    public string WorkspaceName { get; set; }
     private string Message { get; set; }
     private WorkspaceResponseDto currentWorkspace;
 
@@ -88,6 +75,20 @@
         }
     }
 
+    private async Task CreateWorkSpace(string workspaceName)
+    {
+        var workspace = new WorkspaceRequestDto
+        {
+            Name = workspaceName,
+        };
+
+        var response = await plasticServices.CreateWorkSpaceAsync(workspace);
+
+        if (response.Data)
+            Message = response.Message;
+        else
+            Message = $"Error: {response.Message}";
+    }
     
     async Task OnSelectedTitlesChange(object value)
     {
