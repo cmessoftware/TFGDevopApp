@@ -99,6 +99,10 @@
                     </RadzenPanel>
                     @if (loading)
                     {
+                        <div class="spinner"></div>
+                    }
+                    @if (loading)
+                    {
                         <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12" Gap="2rem">
                             <RadzenProgressBarCircular @bind-Value="@loadingValue" />
                             <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Procesando...</RadzenText>
