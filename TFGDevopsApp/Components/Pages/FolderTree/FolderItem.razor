@@ -3,6 +3,7 @@
 @using Radzen
 @using AutoMapper
 @using Microsoft.Extensions.Logging
+@using System.Diagnostics
 @using TFGDevopsApp.Common
 @using TFGDevopsApp.Components.Account.Shared
 @using TFGDevopsApp.Components.Pages.Code
@@ -10,6 +11,7 @@
 @using TFGDevopsApp.Core.Models.Result
 @using TFGDevopsApp.Dtos.Mantis.Issues
 @using TFGDevopsApp.Dtos.Mantis.Project
+@using TFGDevopsApp.Dtos.Plastic.Build
 @using TFGDevopsApp.Dtos.Plastic.Repositories
 @using TFGDevopsApp.Dtos.Plastic.Workspaces
 @using TFGDevopsApp.Infraestructure.Entity.Mantis
@@ -41,13 +43,6 @@
 </style>
 
 <ErrorBoundary>
-   @*  <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12" Gap="2rem">
-        <RadzenProgressBarCircular @bind-Value="@value" />
-        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">ProgressBarCircular with <strong>ProgressBarStyle</strong> property</RadzenText>
-        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Wrap="FlexWrap.Wrap">
-            <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Light" @bind-Value="@value" />
-        </RadzenStack>
-    </RadzenStack> *@
     <div class="container">
     <StatusMessage Message="@message">
            @*  @if (string.IsNullOrEmpty(issueLink))
@@ -59,7 +54,7 @@
         <div class="col-12">
             <div class="rz-grid-table-cell">
              <RadzenPanel>
-                <RadzenButton ButtonStyle="ButtonStyle.Light" Click="@(path => OpenProject(""))">Abrir proyecto @RepoName</RadzenButton>
+                <RadzenButton Icon="launch" ButtonStyle="ButtonStyle.Light" Click="@(path => OpenProject(""))">Abrir @RepoName</RadzenButton>
            @*      <RadzenTree Data="@FolderTrees"
                             TextProperty="FolderTree.Name"
                             ChildItemsProperty="FolderTree.Children"
@@ -81,14 +76,37 @@
             <div class="rz-grid-table-cell">
                     <RadzenPanel>
                         <div class="row">
-                            <div class="col-6 px-5">
-                            <RadzenButton Disabled=@(IsDisabled) Text="Check In" Click="@(() => Checkin())" />
+                            <div class="col-3 px-5">
+                                <RadzenButton Disabled=@(!EnableCheckIn) Text="Check In" Click="@(() => Checkin())" />
                             </div>
-                            <div class="col-6">
-                            <RadzenButton Disabled=@(IsDisabled ? false : true) Text="Solicitar Revisión" Click="@(() => RequestRevision())" />
+                            <div class="col-3">
+                                <RadzenButton Disabled=@(!EnableRequestRevision) Text="Solicitar Revisión" Click="@(() => RequestRevision())" />
+                            </div>
+                            <div class="col-3">
+                                <RadzenButton Icon="build" Disabled=@(!EnableBuildProject) Text="Compilar proyecto" Click="@(() => BuildProject(RepoName))" />
+                            </div>
+                            <div class="col-3">
+                                <RadzenButton
+                                    Disabled=@(!EnableOpenBuildProject)
+                                    Icon="open_in_browser"
+                                    ButtonStyle="ButtonStyle.Light"
+                                    Variant="Variant.Flat"
+                                    Size="Radzen.ButtonSize.Medium"
+                                    Title="Abrit proyecto publicado" 
+                                    Click="@(() => OpenBuilderProject())" />
                             </div>
                         </div>
                     </RadzenPanel>
+                    @if (loading)
+                    {
+                        <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12" Gap="2rem">
+                            <RadzenProgressBarCircular @bind-Value="@loadingValue" />
+                            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Procesando...</RadzenText>
+                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Wrap="FlexWrap.Wrap">
+                                <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Light" @bind-Value="@loadingValue" />
+                            </RadzenStack>
+                        </RadzenStack>
+                    }
                 </div>
             </div>
         </div>
@@ -108,9 +126,18 @@
 
     private bool IsFile { get; set; }
 
+    private double loadingValue;
+    private bool loading = false;
+
     private bool IsDisabled { get; set; }
+    private bool EnableCheckIn { get; set; } = true;
+    private bool EnableRequestRevision { get; set; } = true;
+    private bool EnableBuildProject { get; set; } = true;
+    private bool EnableOpenBuildProject { get; set; } = false;
 
     private string message { get; set; }
+
+    private string outputDirectory;
 
     private string CurrentPath { get; set; }
 
@@ -125,6 +152,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+        await LoadingValue();
 
     }
 
@@ -145,6 +173,13 @@
         </RadzenStack>
     </RadzenStack>
        );
+    }
+
+    public void EnableAll()
+    {
+        EnableCheckIn = true;
+        EnableRequestRevision = true;
+        EnableBuildProject = true;
     }
 
     public void NavigateToIssue()
@@ -176,6 +211,20 @@
           });
     }
 
+    private async Task LoadingValue()
+    {
+        if (loading)
+        {
+            await Task.Delay(500);
+            loadingValue += 1;
+            if (loadingValue == 100)
+            {
+                loadingValue = 0;
+            }
+            await LoadingValue();
+        }
+    }
+
     private void RequestRevision()
     {
         IsDisabled = !IsDisabled;
@@ -194,6 +243,39 @@
         CreateMantisIssue();
     }
 
+    private async Task BuildProject(string repoName)
+    {
+        loading = true;
+        string pathToCompile = configuration.GetValue<string>(Constants.PathToCompile);
+        var workspace = plasticServices.GetWorkSpaceByNameAsync("api/v1/wkspaces", repoName);
+        string projectPath = string.Empty;
+
+        if (workspace == null || 
+            workspace.Result == null ||
+            workspace.Result.Data == null || 
+            string.IsNullOrEmpty(workspace.Result.Data.Path))
+        {
+            message = "Error al obtener el workspace";
+            return;
+        }
+        projectPath = workspace.Result.Data.Path;
+        var result = await plasticServices.BuildProject(projectPath, workspace.Result.Data.Path);
+        outputDirectory = result.Data.OutputDirectory;
+
+        if (result.Data.BuildStatus == EnumStatus.Success)
+        {
+            message = $"Proyecto compilado correctamente en {outputDirectory}";
+            EnableOpenBuildProject = true;
+        }
+        else
+        {
+            message = "Error al compilar el proyecto";
+            EnableOpenBuildProject = false;
+        }
+
+        loading = false;
+    }
+
     private async Task CreatePlasticChangeSet()
     {
            
@@ -201,6 +283,7 @@
 
     private async Task CreateMantisIssue()
     {
+        loading = true;
         var request = new TaskProjectRequestDto()
             {
                 Name = RepoName, //Asumismo que el nombre del proyecto en mantis es igual al nombre del repositorio.
@@ -253,13 +336,48 @@
         else
             message = $"Error al crear la tarea: {response?.Message}";
 
-        
+        loading = false;
+    }
+
+    private async Task OpenBuilderProject()
+    {
+        try
+        {
+            loading = true;
+             
+            var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "explorer",
+                        Arguments = $@"{outputDirectory}",
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            Console.WriteLine(output);
+          
+            loading = false;
+
+        }
+        catch (Exception ex)
+        {
+            loading = false;
+            message = $"Error: {ex.Message}";
+        }
+      
     }
 
     private async Task OpenProject(string? path)
     {
         try
-        {
+        {   loading = true;
             message = string.Empty;
             string branch = "main";
             string executable = "devenv";
@@ -295,9 +413,12 @@
 
             await OpenProject(nextPath);
 
+            loading = false;
+
         }
         catch (Exception ex)
         {
+            loading = false;
             message = $"Error: {ex.Message}";
         }
     }
