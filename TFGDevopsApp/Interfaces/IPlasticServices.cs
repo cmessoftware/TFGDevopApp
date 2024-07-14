@@ -1,6 +1,7 @@
 ﻿using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Dto.Plastic.Workspaces;
 using TFGDevopsApp.Dtos.FolderTree;
+using TFGDevopsApp.Dtos.Plastic.Build;
 using TFGDevopsApp.Dtos.Plastic.ChangeSets;
 using TFGDevopsApp.Dtos.Plastic.Repositories;
 using TFGDevopsApp.Dtos.Plastic.Workspaces;
@@ -9,6 +10,7 @@ namespace TFGDevopsApp.Interfaces
 {
     public interface IPlasticServices
     {
+        Task<Result<BuildResponseDto>> BuildProject(string pojectPath, string pathToCompile);
         Task<Result<bool>> RemoveWorkSpacesAsync(string name);
         Task<Result<CreateRepositoryResponseDto>> CreateRepositoryAsync(RepositoryCreateRequestDto repository);
        

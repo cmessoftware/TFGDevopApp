@@ -2,6 +2,7 @@
 {
     public class Constants
     {
+        public const string PathToCompile = "profiles:TFGDevopsApp:environmentVariables:PathToCompile";
 
         public const string PlasticBaseUrlKey = "profiles:TFGDevopsApp:environmentVariables:PlasticRest:Url";
 
