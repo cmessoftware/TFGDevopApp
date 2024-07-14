@@ -1,0 +1,467 @@
+{
+	"info": {
+		"_postman_id": "9f8931c8-7cac-44ce-bc12-f225524cde6b",
+		"name": "PlasticSCM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19892036",
+		"_collection_link": "https://lunar-spaceship-313485.postman.co/workspace/My-Workspace~cf9fdbbc-d45d-4da6-80f1-616138333719/collection/19892036-9f8931c8-7cac-44ce-bc12-f225524cde6b?action=share&source=collection_link&creator=19892036"
+	},
+	"item": [
+		{
+			"name": "Repositories",
+			"item": [
+				{
+					"name": "repos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/repos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"repos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "repo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/repos/Mandrake2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"repos",
+								"Mandrake2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"NuevoRepo\",\r\n    \"owner\": {\r\n        \"name\": \"admin@gmail.com\",\r\n        \"isGroup\": false\r\n    },\r\n    \"server\": \"cmess@cloud\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/repos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"repos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/repos/Mandrake",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"repos",
+								"Mandrake"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "repos/branches/main",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/wkspaces",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wkspaces"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "WorkSpaces",
+			"item": [
+				{
+					"name": "wkspaces",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/wkspaces",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wkspaces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateWkspaces",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"WksDemo\",\r\n   \"path\": \"C:\\\\Users\\\\CFO Tech\\\\wkspaces\\\\WksDemo\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/wkspaces",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wkspaces"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Changesets",
+			"item": [
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/repos/EjemploTFG/changesets",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"repos",
+								"EjemploTFG",
+								"changesets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/repos/EjemploTFG/changesets",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"repos",
+								"EjemploTFG",
+								"changesets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9090/api/v1/repos/EjemploTFG/revisions/1002/blob",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:9090/api/v1/repos/EjemploTFG/revisions/1002/blob",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"v1",
+								"repos",
+								"EjemploTFG",
+								"revisions",
+								"1002",
+								"blob"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9090/api/v1/repos/EjemploTFG/branches/main/contents/globalIso/GlobalIso/Helpers/CompositeFileWithOptionsProvider.cs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:9090/api/v1/repos/EjemploTFG/branches/main/contents/globalIso/GlobalIso/Helpers/CompositeFileWithOptionsProvider.cs",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"v1",
+								"repos",
+								"EjemploTFG",
+								"branches",
+								"main",
+								"contents",
+								"globalIso",
+								"GlobalIso",
+								"Helpers",
+								"CompositeFileWithOptionsProvider.cs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{baseUrl}}/globalIso",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/globalIso",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"globalIso"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9090/api/v1/repos/EjemploTFG/revisions/3910/blob",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:9090/api/v1/repos/EjemploTFG/revisions/3910/blob",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"v1",
+								"repos",
+								"EjemploTFG",
+								"revisions",
+								"3910",
+								"blob"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Checkin",
+			"item": [
+				{
+					"name": "GetCurrent",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/wkspaces/EjemploTFG/checkin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wkspaces",
+								"EjemploTFG",
+								"checkin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CIPending",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comment\": \"Upgrade core engine\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/wkspaces/EjemploTFG/checkin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wkspaces",
+								"EjemploTFG",
+								"checkin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Changes",
+			"item": [
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/wkspaces/EjemploTFG/changes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wkspaces",
+								"EjemploTFG",
+								"changes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Files",
+			"item": [
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/repos/EjemploTFG/branches/main/contents/globalIso/global.json",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"repos",
+								"EjemploTFG",
+								"branches",
+								"main",
+								"contents",
+								"globalIso",
+								"global.json"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://127.0.0.1:9090",
+			"type": "string"
+		}
+	]
+}

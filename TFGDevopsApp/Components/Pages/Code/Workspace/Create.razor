@@ -15,60 +15,42 @@
     }
 </style>
 
-<AntDesign.Header Title="WorkSpaces">
-    <div class="rz-grid-table mb-10"></div>
-</AntDesign.Header>
 
 <ErrorBoundary>
     <StatusMessage Message="@Message" />
+    <RadzenRow AlignItems="AlignItems.End" Wrap="FlexWrap.Wrap" Gap="1rem" Class="rz-p-sm-12">
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+            <RadzenFormField Text="Text" Variant="Variant.Text" Style="width: 100%;">
+                <RadzenTextBox @bind-Value="@value" Style="width: 100%;" />
+            </RadzenFormField>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+            <RadzenFormField Text="Flat" Variant="Variant.Flat" Style="width: 100%;">
+                <RadzenTextBox @bind-Value="@value" Style="width: 100%;" />
+            </RadzenFormField>
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+            <RadzenFormField Text="Filled" Variant="Variant.Filled" Style="width: 100%;">
+                <RadzenTextBox @bind-Value="@value" Style="width: 100%;" />
+            </RadzenFormField>
+        </RadzenColumn>
+    </RadzenRow>
+
+    @code {
+        string value = "";
+    }
     <RadzenStack Style="mb-10">
         <div class="mb-3">
             <div class="row">
                 <span class="rz-button-box">
                     <a type="submit" class="btn btn-primary" href="/code/workspace/create">
                         <i class="rz-button-icon-center rzi">add</i>
-                        <span class="rz-button-text ">Nuevo Workspace</span>
+                        <span class="rz-button-text ">Agregar Workspace</span>
                     </a>
                 </span>
             </div>
         </div>
     </RadzenStack>
-    <RadzenDataGrid @ref="grid" AllowFiltering="true" AllowColumnResize="true"
-                    FilterMode="FilterMode.Advanced" PageSize="5" AllowPaging="true" AllowSorting="true" 
-                    Data="@workspaces" 
-                    RowClick=@(args => OnRowClick(args))
-                    TItem="WorkspaceResponseDto" ColumnWidth="300px"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterCleared=@FilterCleared
-                    LogicalFilterOperator="LogicalFilterOperator.Or" FilterPopupRenderMode="PopupRenderMode.OnDemand">
-        <Columns>
-            <RadzenDataGridColumn TItem="WorkspaceResponseDto" Property="Name" Title="Nombre" />
-            <RadzenDataGridColumn TItem="WorkspaceResponseDto" Property="MachineName" Title="Servidor" />
-            <RadzenDataGridColumn TItem="WorkspaceResponseDto" Title="Acciones">
-                <Template Context="workSpaces">
-                    <div class="row">
-                        <div class="col-4">
-                            <a class="custom-button" title="Ver repositorios" href="code/repositories">
-                                <i class="bi bi-code"></i> Ver repos
-                            </a>
-                        </div>
-                        <div class="col-4">
-                            <a class="custom-button" title="Borrar workspace" href="code/deleteWorkspace/@Name">
-                                <i class="bi bi-code"></i> Borrar
-                            </a>
-                        </div>
-                           @*  <RadzenButton Click=@OnRemove
-                                          Icon="delete"
-                                          Text="Borrar"
-                                          ButtonStyle="ButtonStyle.Light"
-                                          Variant="Radzen.Variant.Filled"
-                                          Size="ButtonSize.Medium"
-                                          Style="width:auto">
-                            </RadzenButton> *@
-                     </div>
-                </Template>
-            </RadzenDataGridColumn>
-        </Columns>
-    </RadzenDataGrid>
 </ErrorBoundary>
 
 @code {
