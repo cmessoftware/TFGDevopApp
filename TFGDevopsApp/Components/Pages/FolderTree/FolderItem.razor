@@ -99,10 +99,6 @@
                     </RadzenPanel>
                     @if (loading)
                     {
-                        <div class="spinner"></div>
-                    }
-                    @if (loading)
-                    {
                         <RadzenStack AlignItems="AlignItems.Center" Class="rz-m-12" Gap="2rem">
                             <RadzenProgressBarCircular @bind-Value="@loadingValue" />
                             <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Procesando...</RadzenText>
@@ -253,6 +249,7 @@
         string pathToCompile = configuration.GetValue<string>(Constants.PathToCompile);
         var workspace = plasticServices.GetWorkSpaceByNameAsync("api/v1/wkspaces", repoName);
         string projectPath = string.Empty;
+        Result<BuildResponseDto> result = new();
 
         if (workspace == null || 
             workspace.Result == null ||
@@ -263,21 +260,26 @@
             return;
         }
         projectPath = workspace.Result.Data.Path;
-        var result = await plasticServices.BuildProject(projectPath, workspace.Result.Data.Path);
-        outputDirectory = result.Data.OutputDirectory;
 
-        if (result.Data.BuildStatus == EnumStatus.Success)
+        await Task.Run(async () =>
         {
-            message = $"Proyecto compilado correctamente en {outputDirectory}";
-            EnableOpenBuildProject = true;
-        }
-        else
-        {
-            message = "Error al compilar el proyecto";
-            EnableOpenBuildProject = false;
-        }
+            result = await plasticServices.BuildProject(projectPath, pathToCompile);
+            outputDirectory = result.Data.OutputDirectory;
+
+            if (result.Data.BuildStatus == EnumStatus.Success)
+            {
+                message = $"Proyecto compilado correctamente en {outputDirectory}";
+                EnableOpenBuildProject = true;
+            }
+            else
+            {
+                message = "Error al compilar el proyecto";
+                EnableOpenBuildProject = false;
+            }
+        });
 
         loading = false;
+
     }
 
     private async Task CreatePlasticChangeSet()
