@@ -5,6 +5,7 @@
 @using Radzen.Blazor
 @using TFGDevopsApp.Components.Account.Shared
 @using TFGDevopsApp.Dto.Plastic.Workspaces
+@using TFGDevopsApp.Dtos.Plastic.Repositories
 @using TFGDevopsApp.Dtos.Plastic.Workspaces
 @using TFGDevopsApp.Interfaces
 @using TFGDevopsApp.Services
@@ -24,7 +25,7 @@
     <RadzenRow AlignItems="AlignItems.End" Wrap="FlexWrap.Wrap" Gap="1rem" Class="rz-p-sm-12">
         <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
             <RadzenFormField Text="Nombre" Variant="Variant.Text" Style="width: 100%;">
-                <RadzenTextBox @bind-Value="@WorkspaceName" Style="width: 100%;" />
+                <RadzenTextBox @bind-Value="@RepoName" Style="width: 100%;" />
             </RadzenFormField>
         </RadzenColumn>
     </RadzenRow>
@@ -32,7 +33,7 @@
         <RadzenStack Style="mb-10">
             <div class="mb-3">
                 <div class="row">
-                   <RadzenButton Click="@(() => CreateWorkSpace(WorkspaceName))">Agregar Workspace</RadzenButton>
+                    <RadzenButton Click="@(() => CreateRepository(RepoName))">Agregar Workspace</RadzenButton>
                 </div>
             </div>
         </RadzenStack>
@@ -42,7 +43,7 @@
 @code {
 
 
-    public string WorkspaceName { get; set; }
+    public string RepoName { get; set; }
     private string Message { get; set; }
     private WorkspaceResponseDto currentWorkspace;
 
@@ -51,7 +52,7 @@
     IEnumerable<string> selectedTitles;
     IEnumerable<string> selectedSecondTitles;
 
-  
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -75,19 +76,26 @@
         }
     }
 
-    private async Task CreateWorkSpace(string workspaceName)
+    private async Task CreateRepository(string repoName)
     {
-        var workspace = new WorkspaceRequestDto
+        try
         {
-            Name = workspaceName,
-        };
+            var workspace = new RepositoryCreateRequestDto
+                {
+                    Name = repoName,
+                };
 
-        var response = await plasticServices.CreateWorkSpaceAsync(workspace);
+            var response = await plasticServices.CreateRepositoryAsync(workspace);
 
-        if (response.Data)
-            Message = response.Message;
-        else
-            Message = $"Error: {response.Message}";
+            if (response.Success)
+                Message = response.Message;
+            else
+                Message = $"Error: {response.Message}";
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+        }
     }
     
     async Task OnSelectedTitlesChange(object value)
