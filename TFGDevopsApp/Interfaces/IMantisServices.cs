@@ -7,7 +7,7 @@ namespace TFGDevopsApp.Interfaces
     public interface IMantisServices
     {
         Task<Result<IssueTrackingResponseDto>> GetIssueTrackingByChangeSetId(int changeSetId);
-        Task<Result<TaskResponseDto>> GetTaskByIdAsync(string path, int id);
+        Task<Result<TaskByIdResponseDto>> GetTaskByIdAsync(string path, int id);
         Task<Result<TaskCreateResponseDto>> CreateTaskAsync(TaskCreateRequestDto request, string path);
         Task<Result<TasksResponseDto>> GetTasksAsync(string path);
         Task<Result<List<TaskCategoryResponseDto>>> GetCategories();

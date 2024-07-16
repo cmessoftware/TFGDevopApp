@@ -5,7 +5,7 @@ using TFGDevopsApp.Interfaces;
 
 namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
 {
-    public class GetTaskByIdQuery : IRequest<Result<TaskResponseDto>>
+    public class GetTaskByIdQuery : IRequest<Result<TaskByIdResponseDto>>
     {
         public GetTaskByIdQuery(string path, int id)
         {

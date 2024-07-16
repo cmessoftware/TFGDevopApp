@@ -35,7 +35,7 @@ namespace TFGDevopsApp.Services
             }
         }
 
-        public async Task<Result<TaskResponseDto>> GetTaskByIdAsync(string path, int id)
+        public async Task<Result<TaskByIdResponseDto>> GetTaskByIdAsync(string path, int id)
         {
             var query = new GetTaskByIdQuery(path, id);
             var result = await _mediator.Send(query);

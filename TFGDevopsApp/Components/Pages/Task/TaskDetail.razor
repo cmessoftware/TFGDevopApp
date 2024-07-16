@@ -1,4 +1,6 @@
 ﻿@page "/task/details/{Id}"
+@rendermode InteractiveServer
+
 @using TFGDevopsApp.Components.Pages.Code
 @using TFGDevopsApp.Interfaces
 @using TFGDevopsApp.Core.Helpers
@@ -14,7 +16,7 @@
 </AntDesign.Header>
 
 <ErrorBoundary>
-   @*  <RadzenDataList @ref="grid" AllowPaging="true" PageSize="5" Data="@tasks" TItem="Issue">
+    <RadzenDataList @ref="grid" AllowPaging="true" PageSize="5" Data="@tasks" TItem="Issue">
         <Template Context="issue">
             <div style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding: 10px;">
                 <div><strong>Resumen:</strong> @issue.Summary</div>
@@ -26,7 +28,7 @@
                 <div><strong>Descripción:</strong> @issue.Description</div>
             </div>
         </Template>
-    </RadzenDataList> *@
+    </RadzenDataList>
 </ErrorBoundary>
 
 @code {
@@ -46,6 +48,6 @@
     {
         await base.OnInitializedAsync();
         var response = await mantisServices.GetTaskByIdAsync("issues",Convert.ToInt32(@Id));
-        tasks[0] = response.Data.Issues[0];
+        tasks[0] = response.Data.Issue;
     }
 }
