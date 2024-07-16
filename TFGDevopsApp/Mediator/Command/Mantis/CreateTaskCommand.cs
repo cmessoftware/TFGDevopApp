@@ -9,12 +9,15 @@ namespace TFGDevopsApp.Mediator.Command.Mantis
     {
         public readonly Issue Issue;
         public readonly string Path;
+        public TaskCreateRequestDto TaskCreateRequest { get; }
 
         public CreateTaskCommand(TaskCreateRequestDto request,
                                  string path)
         {
             Issue = request.Issue;
-            this.Path = path;
+            TaskCreateRequest = request;
+            Path = path;
         }
+
     }
 }

@@ -4,7 +4,7 @@ namespace TFGDevopsApp.Dtos.Mantis.Issues
 {
     public class TaskResponseDto
     {
-        public Issue Issue { get; set; }
+        public List<Issue> Issues { get; set; }
     }
 }
 

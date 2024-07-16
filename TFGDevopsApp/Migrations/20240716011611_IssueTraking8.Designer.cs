@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TFGDevopsApp.Data;
 
@@ -10,9 +11,11 @@ using TFGDevopsApp.Data;
 namespace TFGDevopsApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240716011611_IssueTraking8")]
+    partial class IssueTraking8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -233,7 +236,7 @@ namespace TFGDevopsApp.Migrations
 
             modelBuilder.Entity("TFGDevopsApp.Infraestructure.Entity.Mantis.IssueTracking", b =>
                 {
-                    b.Property<long?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -270,7 +273,7 @@ namespace TFGDevopsApp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<long?>("RelatedIssueId")
+                    b.Property<int?>("RelatedIssueId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Reporter")
@@ -284,7 +287,7 @@ namespace TFGDevopsApp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("Type")
+                    b.Property<int>("Type")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedDate")
@@ -293,149 +296,6 @@ namespace TFGDevopsApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("IssueTrackings");
-                });
-
-            modelBuilder.Entity("TFGDevopsApp.Infraestructure.Entity.Plastic.Changeset", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CreationDate")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Guid")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ParentId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long?>("ProjectId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("Changesets");
-                });
-
-            modelBuilder.Entity("TFGDevopsApp.Infraestructure.Entity.Project.Project", b =>
-                {
-                    b.Property<long?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Branch")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Owner")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerEmail")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Repository")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Projects");
-                });
-
-            modelBuilder.Entity("TFGDevopsApp.Infraestructure.Entity.Project.ProjectBuild", b =>
-                {
-                    b.Property<long?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Duration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Owner")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerEmail")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<long?>("ProjectId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("ProjectBuilders");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -487,27 +347,6 @@ namespace TFGDevopsApp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("TFGDevopsApp.Infraestructure.Entity.Plastic.Changeset", b =>
-                {
-                    b.HasOne("TFGDevopsApp.Infraestructure.Entity.Project.Project", null)
-                        .WithMany("ChangeSets")
-                        .HasForeignKey("ProjectId");
-                });
-
-            modelBuilder.Entity("TFGDevopsApp.Infraestructure.Entity.Project.ProjectBuild", b =>
-                {
-                    b.HasOne("TFGDevopsApp.Infraestructure.Entity.Project.Project", null)
-                        .WithMany("ProjectBuilders")
-                        .HasForeignKey("ProjectId");
-                });
-
-            modelBuilder.Entity("TFGDevopsApp.Infraestructure.Entity.Project.Project", b =>
-                {
-                    b.Navigation("ChangeSets");
-
-                    b.Navigation("ProjectBuilders");
                 });
 #pragma warning restore 612, 618
         }
