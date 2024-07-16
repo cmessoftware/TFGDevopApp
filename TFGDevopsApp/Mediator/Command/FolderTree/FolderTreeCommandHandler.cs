@@ -21,7 +21,7 @@ namespace TFGDevopsApp.UseCases.Contributor.Command.CompileProyects
         public async Task<Result<FolderTreeDto>> Handle(FolderTreeCommand request, CancellationToken cancellationToken)
         {
             var projectPath = request.ProjectPath;
-            var patterns = _configuration["profiles:TFGDevopsApp.Web:environmentVariables:includeFiles"];
+            var patterns = _configuration["profiles:TFGDevopsApp:environmentVariables:includeFiles"];
             var searchPatterns = string.IsNullOrEmpty(patterns) ? new List<string> { "*.cs" } :
                                  patterns.Split(",").ToList();
             var codeFiles = Directory.GetFiles(projectPath, patterns, SearchOption.AllDirectories);

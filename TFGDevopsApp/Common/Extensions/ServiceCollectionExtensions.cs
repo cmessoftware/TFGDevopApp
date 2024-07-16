@@ -4,6 +4,7 @@ using TFGDevopsApp.Services;
 using TFGDevopsApp.Infraestructure.Repository;
 using TFGDevopsApp.Interfaces;
 using TFGDevopsApp.Services;
+using TFGDevopsApp.Common.Helpers;
 
 namespace TFGDevopsApp.Common.Extensions
 {
@@ -24,6 +25,8 @@ namespace TFGDevopsApp.Common.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IIssueRepository, IssueRepository>();
+            services.AddScoped<IIssueTrackingRepository, IssueTrackingRepository>();
+            services.AddScoped<RegisterIssuesActionHelper>();
 
         }
     }
