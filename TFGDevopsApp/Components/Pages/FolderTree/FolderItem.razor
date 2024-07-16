@@ -54,34 +54,19 @@
     <div class="row">
         <div class="col-12">
             <div class="rz-grid-table-cell">
-             <RadzenPanel>
-                <RadzenButton Icon="launch" ButtonStyle="ButtonStyle.Light" Click="@(path => OpenProject(""))">Abrir @RepoName</RadzenButton>
-           @*      <RadzenTree Data="@FolderTrees"
-                            TextProperty="FolderTree.Name"
-                            ChildItemsProperty="FolderTree.Children"
-                            Expand=@LoadDataAsync
-                            Change=@OnNodeChange>
-                    <RadzenTreeItem Text="@RepoName">
-                        @foreach (var repo in FolderTrees)
-                        {
-                            <RadzenTreeItem Text="@repo.Name" Expand=@LoadDataAsync>
-                                @BuildTreeView(repo)
-                            </RadzenTreeItem>
-                        }
-                    </RadzenTreeItem>
-                </RadzenTree>  *@
-            </RadzenPanel>
-            </div>
-        </div>
-        <div class="col-8">
-            <div class="rz-grid-table-cell">
                     <RadzenPanel>
+                   
                         <div class="row">
                             <div class="col-3 px-5">
-                                <RadzenButton Name="ChangeSetId" Disabled=@(!EnableChangeSet) Text="Change Set" Click="@(() => RegisterChangeSet())" />
-                                <RadzenTextBox Disabled=@IsDisabled Placeholder="ChangeSet" @bind-Value="@ChangeSetId" />
-                                <RadzenRequiredValidator Component="ChangeSetId" Text="Ingrese ChangeSetId" />
+                                    <RadzenTextBox Disabled=@IsDisabled Placeholder="ChangeSet" @bind-Value="@ChangeSetId" />
+                                    <RadzenRequiredValidator Component="ChangeSetId" Text="Ingrese ChangeSetId" />
                             </div>
+                            <div class="col-3 px-5">
+                                <RadzenButton  Name="ChangeSetId" Disabled=@(!EnableChangeSet) Text="Registar ChangeSet" Click="@(() => RegisterChangeSet())" />
+                            </div>
+                        </div>
+                        <AntDesign.Divider />
+                        <div class="row">
                             <div class="col-3">
                                 <RadzenButton Disabled=@(!EnableRequestRevision) Text="Solicitar Revisión" Click="@(() => RequestRevision())" />
                             </div>
@@ -89,14 +74,14 @@
                                 <RadzenButton Icon="build" Disabled=@(!EnableBuildProject) Text="Compilar proyecto" Click="@(() => BuildProject(RepoName))" />
                             </div>
                             <div class="col-3">
+                                <RadzenButton Icon="launch" ButtonStyle="ButtonStyle.Primary" Click="@(path => OpenProject(""))">Ver @RepoName</RadzenButton>
+                            </div>
+                            <div class="col-3">
                                 <RadzenButton
-                                    Disabled=@(!EnableOpenBuildProject)
                                     Icon="open_in_browser"
-                                    ButtonStyle="ButtonStyle.Light"
-                                    Variant="Variant.Flat"
-                                    Size="Radzen.ButtonSize.Medium"
-                                    Title="Abrit proyecto publicado" 
-                                    Click="@(() => OpenBuilderProject())" />
+                                    Title="Ver proyecto publicado" 
+                                    Click="@(() => OpenBuilderProject())" >
+                                    Ver proyecto publicado </RadzenButton>
                             </div>
                         </div>
                     </RadzenPanel>
@@ -220,8 +205,8 @@
     {
         if (loading)
         {
-            await Task.Delay(500);
-            loadingValue += 1;
+            await Task.Delay(100);
+            loadingValue += 10;
             if (loadingValue == 100)
             {
                 loadingValue = 0;
@@ -251,14 +236,27 @@
     private async Task BuildProject(string repoName)
     {
         loading = true;
+
+        await Task.Run(async () =>
+        {
+            await BuildProjectAsync(repoName);
+        });
+
+
+        loading = false;
+
+    }
+
+    private async Task BuildProjectAsync(string repoName)
+    {
         string pathToCompile = configuration.GetValue<string>(Constants.PathToCompile);
         var workspace = plasticServices.GetWorkSpaceByNameAsync("api/v1/wkspaces", repoName);
         string projectPath = string.Empty;
         Result<BuildResponseDto> result = new();
 
-        if (workspace == null || 
+        if (workspace == null ||
             workspace.Result == null ||
-            workspace.Result.Data == null || 
+            workspace.Result.Data == null ||
             string.IsNullOrEmpty(workspace.Result.Data.Path))
         {
             message = "Error al obtener el workspace";
@@ -266,25 +264,19 @@
         }
         projectPath = workspace.Result.Data.Path;
 
-        await Task.Run(async () =>
+        result = await plasticServices.BuildProject(projectPath, pathToCompile);
+        outputDirectory = result.Data.OutputDirectory;
+
+        if (result.Data.BuildStatus == EnumStatus.Success)
         {
-            result = await plasticServices.BuildProject(projectPath, pathToCompile);
-            outputDirectory = result.Data.OutputDirectory;
-
-            if (result.Data.BuildStatus == EnumStatus.Success)
-            {
-                message = $"Proyecto compilado correctamente en {outputDirectory}";
-                EnableOpenBuildProject = true;
-            }
-            else
-            {
-                message = "Error al compilar el proyecto";
-                EnableOpenBuildProject = false;
-            }
-        });
-
-        loading = false;
-
+            message = $"Proyecto compilado correctamente en {outputDirectory}";
+            EnableOpenBuildProject = true;
+        }
+        else
+        {
+            message = "Error al compilar el proyecto";
+            EnableOpenBuildProject = false;
+        }
     }
 
     private async Task CreatePlasticChangeSet()
@@ -446,8 +438,6 @@
         }
        
    
-       
-
         loading = false;
     }
 
@@ -456,8 +446,10 @@
         try
         {
             loading = true;
-             
-            var process = new Process
+            
+            await Task.Run(() =>
+            {
+                var process = new Process
                 {
                     StartInfo = new ProcessStartInfo
                     {
@@ -469,11 +461,12 @@
                     }
                 };
 
-            process.Start();
-            string output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
 
-            Console.WriteLine(output);
+                Console.WriteLine(output);
+            });
           
             loading = false;
 
