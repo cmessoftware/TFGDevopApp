@@ -1,6 +1,9 @@
-﻿using AutoMapper;
+﻿using AntDesign;
+using AutoMapper;
+using TFGDevopsApp.Core.Helpers;
 using TFGDevopsApp.Dtos.FolderTree;
 using TFGDevopsApp.Dtos.Plastic.Repositories;
+using TFGDevopsApp.Infraestructure.Entity.Mantis;
 
 namespace TFGDevopsApp.Common.Mapper
 {
@@ -24,9 +27,27 @@ namespace TFGDevopsApp.Common.Mapper
                 .ForMember(dst => dst.Comment, opt => opt.MapFrom(x => x.comment))
                 .ForMember(dst => dst.CreationDate, opt => opt.MapFrom(x => x.creationDate))
                 .ForMember(dst => dst.owner, opt => opt.MapFrom(x => new OwnerModel()));
-              
 
-
+            CreateMap<Issue, IssueTracking>()
+                .ForMember(dest => dest.Id, src => src.MapFrom(x => 0))
+                .ForMember(dest => dest.Reporter, opt => opt.MapFrom((src, dst) =>
+                {
+                    dst.Reporter = src.Reporter?.Name;
+                    return dst;
+                }))
+                 .ForMember(dest => dest.Category, opt => opt.MapFrom((src, dst) =>
+                 {
+                     dst.Category = src.Category?.Name;
+                     return dst;
+                 }))
+                  .ForMember(dest => dest.Project, opt => opt.MapFrom((src, dst) =>
+                  {
+                      dst.Project = src.Project?.Name;
+                      return dst;
+                  }))
+                .ForMember(dest => dest.Summary, src => src.MapFrom(x => x.Summary))
+                .ForMember(dest => dest.Description, src => src.MapFrom(x => x.Description));
+             
         }
     }
 }

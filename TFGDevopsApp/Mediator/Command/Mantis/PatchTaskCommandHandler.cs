@@ -1,58 +1,54 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using TFGDevopsApp.Common;
 using TFGDevopsApp.Common.Enum;
 using TFGDevopsApp.Common.Exceptions;
+using TFGDevopsApp.Common.Extensions;
 using TFGDevopsApp.Common.Helpers;
 using TFGDevopsApp.Core.Helpers;
 using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Dtos.Mantis.Issues;
 using TFGDevopsApp.Mediator.Command.Mantis;
-using TFGDevopsApp.Common.Extensions;
 
 namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
 {
-    public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Result<TaskCreateResponseDto>>
+    public class PatchTaskCommandHandler : IRequestHandler<PatchTaskCommand, Result<TaskResponseDto>>
     {
         private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
         private readonly RegisterIssuesActionHelper _registerIssuesActionHelper;
 
-        public CreateTaskCommandHandler(IConfiguration configuration,
-                                        IMapper mapper,
+        public PatchTaskCommandHandler(IConfiguration configuration,
                                         RegisterIssuesActionHelper registerIssuesActionHelper)
         {
             _configuration = configuration;
-            _mapper = mapper;
             _registerIssuesActionHelper = registerIssuesActionHelper;
         }
 
 
-        async Task<Result<TaskCreateResponseDto>> IRequestHandler<CreateTaskCommand, Result<TaskCreateResponseDto>>.Handle(CreateTaskCommand request, CancellationToken cancellationToken)
+        async Task<Result<TaskResponseDto>> IRequestHandler<PatchTaskCommand, Result<TaskResponseDto>>.Handle(PatchTaskCommand request, CancellationToken cancellationToken)
         {
             try
             {
 
-                TaskCreateResponseDto result = null;
+                TaskResponseDto result = null;
                 var mantisBaseUrl = _configuration.GetValue<string>(Constants.MantisBaseUrl);
                 var authToken = _configuration.GetValue<string>(Constants.MantisAuthKey);
 
                 if (!string.IsNullOrEmpty(mantisBaseUrl))
                 {
                     var url = $"{mantisBaseUrl}{request.Path}";
-                    result = await RestClientHelper.AuthorizedPostAsync<TaskCreateResponseDto, Issue>(url, request.Issue, authToken);
+                    result = await RestClientHelper.AuthorizedPatchAsync<TaskResponseDto, TaskPatchRequestDto>(url, request.TaskPatchRequest, authToken);
                 }
+
+                await _registerIssuesActionHelper.RegisterCreateTask(result.Issue, EnumIssueType.RequestCodeReview.ToInt(), request.TaskPatchRequest.ChangeSetId);
+
 
                 if (result != null)
                 {
-
-                    await _registerIssuesActionHelper.RegisterCreateTask(result.Issue,request?.TaskCreateRequest?.ChangeSetId);
-                  
                     return await Task.FromResult(
-                        new Result<TaskCreateResponseDto>()
+                        new Result<TaskResponseDto>()
                         {
-                            Data = result,
-                            Message = $"Tarea Id: {result.Issue.Id} {result.Issue?.Summary} creado correctamente",
+                            Data = null,
+                            Message = $"Task {request} asociado correctamente",
                             Success = true
                         });
 
@@ -60,9 +56,9 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
                 else
                 {
                     return await Task.FromResult(
-                        new Result<TaskCreateResponseDto>()
+                        new Result<TaskResponseDto>()
                         {
-                            Data = result,
+                            Data = null,
                             Message = "No se pudo crear el issue",
                             Success = false
                         });
@@ -70,7 +66,7 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             }
             catch (RestClientException ex)
             {
-                return new Result<TaskCreateResponseDto>()
+                return new Result<TaskResponseDto>()
                 {
                     Data = null,
                     Message = ex.Message,
@@ -79,7 +75,7 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             }
             catch (Exception ex)
             {
-                return new Result<TaskCreateResponseDto>()
+                return new Result<TaskResponseDto>()
                 {
                     Data = null,
                     Message = ex.Message,
@@ -87,6 +83,6 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
                 };
             }
         }
-
+        
     }
 }

@@ -5,6 +5,7 @@
 @using Microsoft.Extensions.Logging
 @using System.Diagnostics
 @using TFGDevopsApp.Common
+@using TFGDevopsApp.Common.Enum
 @using TFGDevopsApp.Components.Account.Shared
 @using TFGDevopsApp.Components.Pages.Code
 @using TFGDevopsApp.Core.Helpers
@@ -77,7 +78,9 @@
                     <RadzenPanel>
                         <div class="row">
                             <div class="col-3 px-5">
-                                <RadzenButton Disabled=@(!EnableCheckIn) Text="Check In" Click="@(() => Checkin())" />
+                                <RadzenButton Name="ChangeSetId" Disabled=@(!EnableChangeSet) Text="Change Set" Click="@(() => RegisterChangeSet())" />
+                                <RadzenTextBox Disabled=@IsDisabled Placeholder="ChangeSet" @bind-Value="@ChangeSetId" />
+                                <RadzenRequiredValidator Component="ChangeSetId" Text="Ingrese ChangeSetId" />
                             </div>
                             <div class="col-3">
                                 <RadzenButton Disabled=@(!EnableRequestRevision) Text="Solicitar Revisión" Click="@(() => RequestRevision())" />
@@ -126,11 +129,13 @@
 
     private bool IsFile { get; set; }
 
+    private string? ChangeSetId { get; set; }
+
     private double loadingValue;
     private bool loading = false;
 
     private bool IsDisabled { get; set; }
-    private bool EnableCheckIn { get; set; } = true;
+    private bool EnableChangeSet { get; set; } = true;
     private bool EnableRequestRevision { get; set; } = true;
     private bool EnableBuildProject { get; set; } = true;
     private bool EnableOpenBuildProject { get; set; } = false;
@@ -177,7 +182,7 @@
 
     public void EnableAll()
     {
-        EnableCheckIn = true;
+        EnableChangeSet = true;
         EnableRequestRevision = true;
         EnableBuildProject = true;
     }
@@ -227,7 +232,7 @@
 
     private void RequestRevision()
     {
-        IsDisabled = !IsDisabled;
+        CreateRevisionRequestIssue();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -235,12 +240,12 @@
         //await jsRuntime.InvokeVoidAsync("Prism.highlightAll");
     }
 
-    private async Task Checkin()
+    private async Task RegisterChangeSet()
     {
 
         CreatePlasticChangeSet();
 
-        CreateMantisIssue();
+        CreateChangeSetIssue();
     }
 
     private async Task BuildProject(string repoName)
@@ -284,12 +289,20 @@
 
     private async Task CreatePlasticChangeSet()
     {
-           
+
     }
 
-    private async Task CreateMantisIssue()
+    private async Task CreateChangeSetIssue()
     {
         loading = true;
+
+        if(string.IsNullOrEmpty(ChangeSetId))
+        {
+            message = "Error: Debe ingresar el ChangeSetId";
+            loading = false;
+            return;
+        }
+
         var request = new TaskProjectRequestDto()
             {
                 Name = RepoName, //Asumismo que el nombre del proyecto en mantis es igual al nombre del repositorio.
@@ -298,10 +311,11 @@
 
         //Creo una tara asociada en mantis.
         string path = "issues";
-        var task = new TaskCreateRequestDto(new Issue
+        var task = new TaskCreateRequestDto(
+            new Issue
             {
-                Summary = "Checkin",
-                Description = $"Checkin repositorio {RepoName} ",
+                Summary = $"ChangeSet repositorio {RepoName}",
+                Description = $"ChangeSet repositorio {RepoName} ",
                 Project = new Identifier() { Name = RepoName },
                 Category = new Identifier() { Name = "General" },
                 Priority = new Identifier() { Name = "normal" },
@@ -311,10 +325,13 @@
                   new IssueCustomField()
                   {
                       Field = new Field() { Name = "changeSetId" },
-                      Value = new Random().Next(1, 10000)
+                      Value = int.Parse(ChangeSetId)
                   }
                 }
-            }
+            },
+            EnumIssueType.ChangeSet,
+            int.Parse(this.ChangeSetId)
+            
         );
 
         var response = await mantisServices.CreateTaskAsync(task, path);
@@ -322,12 +339,10 @@
         if (response != null && response.Success)
         {
             var issue = response.Data?.Issue;
-            var changeSetIdField = issue?.CustomFields?.FirstOrDefault(x => x.Field.Name == "changeSetId");
-            var changeSetIdValue = changeSetIdField?.Value?.ToString() ?? "unknown";
 
             issueLink = $"https://mantis.tfg.es/view.php?id={issue?.Id}";
 
-            message = $"Tarea {issue?.Id} - {issue?.Summary} creada correctamente (changeSetId {changeSetIdValue})";
+            message = $"Tarea Id: {issue?.Id} - {issue?.Summary} creada correctamente ";
 
             // Registro la tarea en el repositorio.
             var result = await issueRepository.CreateAsync(new IssueEntity()
@@ -338,6 +353,64 @@
 
                 });
 
+        }
+        else
+            message = $"Error al crear la tarea: {response?.Message}";
+
+        loading = false;
+    }
+
+    private async Task CreateRevisionRequestIssue()
+    {
+        loading = true;
+
+        if (string.IsNullOrEmpty(ChangeSetId))
+        {
+            message = "Error: Debe ingresar el ChangeSetId";
+            loading = false;
+            return;
+        }
+
+        var request = new TaskProjectRequestDto()
+            {
+                Name = RepoName, //Asumismo que el nombre del proyecto en mantis es igual al nombre del repositorio.
+                Path = "projects"
+            };
+
+        //Creo una tara asociada en mantis.
+        string path = "issues";
+        var task = new TaskCreateRequestDto(new Issue
+            {
+                Summary = $"Revision Request ChangeSet {RepoName}",
+                Description = $"ChangeSet repositorio {RepoName} ",
+                Project = new Identifier() { Name = RepoName },
+                Category = new Identifier() { Name = "General" },
+                Priority = new Identifier() { Name = "normal" },
+                Severity = new Identifier() { Name = "minor" },
+                CustomFields = new List<IssueCustomField>()
+                {
+                  new IssueCustomField()
+                  {
+                      Field = new Field() { Name = "changeSetId" },
+                      Value = int.Parse(ChangeSetId)
+                  }
+                }
+            },
+            EnumIssueType.RequestCodeReview,
+            int.Parse(ChangeSetId)
+        );
+
+        var response = await mantisServices.CreateTaskAsync(task, path);
+
+   
+        if (response != null && response.Success)
+        {
+            var issue = response.Data?.Issue;
+       
+            issueLink = $"https://mantis.tfg.es/view.php?id={issue?.Id}";
+
+            message = $"Tarea {issue?.Id} - {issue?.Summary} creada correctamente";
+          
         }
         else
             message = $"Error al crear la tarea: {response?.Message}";

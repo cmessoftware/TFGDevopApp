@@ -13,5 +13,7 @@ namespace TFGDevopsApp.Interfaces
         Task<Result<TasksResponseDto>> GetTasksAsync(string path);
         Task<Result<List<TaskCategoryResponseDto>>> GetCategories();
         Task<Result<TaskResponseDto>> UpdateTaskAsync(TaskCreateRequestDto request);
+
+        Task<Result<TaskResponseDto>> PatchTaskAsync(TaskPatchRequestDto request);
     }
 }

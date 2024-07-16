@@ -112,5 +112,21 @@ namespace TFGDevopsApp.Services
             }
         }
 
+        public async Task<Result<TaskResponseDto>> PatchTaskAsync(TaskPatchRequestDto request)
+        {
+            string path = $"api/rest/issues/{request.ParentIssueId}/relationships/";
+
+            var query = new PatchTaskCommand(request,path);
+            var result = await _mediator.Send(query);
+
+            if (result != null)
+            {
+                return await Task.FromResult(result);
+            }
+            else
+            {
+                return result;
+            }
+        }
     }
 }

@@ -1,9 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using AntDesign;
+using Newtonsoft.Json;
 using RestSharp;
 using System.Net;
 using System.Text;
 using TFGDevopsApp.Common.Exceptions;
 using TFGDevopsApp.Common.Extensions;
+using TFGDevopsApp.Dtos.Mantis.Issues;
 
 namespace TFGDevopsApp.Common.Helpers
 {
@@ -257,5 +259,31 @@ namespace TFGDevopsApp.Common.Helpers
             return data;
         }
 
+        public static async Task<R> AuthorizedPatchAsync<R, T>(string apiPath, T input, string? authToken)
+        {
+            R data = default;
+
+            string url = apiPath;
+
+            var client = new RestClient(url);
+          
+            var request = new RestRequest(Method.PATCH);
+            
+            if (!string.IsNullOrEmpty(authToken))
+                client.AddDefaultHeader("Authorization", authToken);
+
+            IRestResponse response = client.Patch(request);
+
+            if (response != null && response.StatusCode == HttpStatusCode.OK)
+            {
+                data = JsonConvert.DeserializeObject<R>(response.Content);
+            }
+            else
+            {
+                throw new RestClientException($"Error: {response.StatusCode} - {response.ErrorMessage}");
+            }
+
+            return data;
+        }
     }
 }

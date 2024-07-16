@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TFGDevopsApp.Data;
 
@@ -10,9 +11,11 @@ using TFGDevopsApp.Data;
 namespace TFGDevopsApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240715232205_IssueTraking3")]
+    partial class IssueTraking3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -231,11 +234,10 @@ namespace TFGDevopsApp.Migrations
                     b.ToTable("Issues");
                 });
 
-            modelBuilder.Entity("TFGDevopsApp.Infraestructure.Entity.Mantis.IssueTracking", b =>
+            modelBuilder.Entity("TFGDevopsApp.Infraestructure.Repository.IssueTracking", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Assignee")
                         .HasColumnType("TEXT");
@@ -244,10 +246,8 @@ namespace TFGDevopsApp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("ChangeSetId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedDate")
@@ -256,10 +256,11 @@ namespace TFGDevopsApp.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<long?>("IssueId")
+                    b.Property<int>("IssueId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ModifiedBy")
+                    b.Property<string>("ModifieddBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Priority")
@@ -270,10 +271,11 @@ namespace TFGDevopsApp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("RelatedIssueId")
+                    b.Property<int>("RelatedIssueId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Reporter")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Status")
