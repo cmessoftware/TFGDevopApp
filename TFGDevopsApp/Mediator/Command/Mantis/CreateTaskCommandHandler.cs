@@ -45,9 +45,8 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
 
                 if (result != null)
                 {
+                    await RegisterReviewRequest(request, result);
 
-                    await _registerIssuesActionHelper.RegisterCreateTask(result.Issue,request?.TaskCreateRequest?.ChangeSetId);
-                  
                     return await Task.FromResult(
                         new Result<TaskCreateResponseDto>()
                         {
@@ -88,5 +87,11 @@ namespace TFGDevopsApp.Mediator.Queries.Mantis.Issues
             }
         }
 
+        private async Task<bool> RegisterReviewRequest(CreateTaskCommand request, TaskCreateResponseDto result)
+        {
+            var response = await _registerIssuesActionHelper.RegisterCreateTask(result.Issue, request.TaskCreateRequest.Type.ToInt(), request?.TaskCreateRequest?.ChangeSetId);
+
+            return response;
+        }
     }
 }

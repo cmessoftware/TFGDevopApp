@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using TFGDevopsApp.Core.Helpers;
 using TFGDevopsApp.Data;
 using TFGDevopsApp.Infraestructure.Entity.Mantis;
 
@@ -63,6 +64,17 @@ namespace TFGDevopsApp.Infraestructure.Repository
             _context.IssueTrackings.Remove(model);
             await _context.SaveChangesAsync();
             return model;
+        }
+
+        public async Task<IssueTracking> GetByChangeSetIdAsync(int changeSetId, int type)
+        {
+            var response = await (from issue in _context.IssueTrackings
+                                  where issue.ChangeSetId == changeSetId && 
+                                  issue.Type == type
+                                  select issue)
+                                  .FirstOrDefaultAsync();
+
+            return response;
         }
 
     }

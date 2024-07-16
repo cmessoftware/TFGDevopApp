@@ -108,7 +108,7 @@ namespace TFGDevopsApp.Common.Helpers
 
             IRestResponse response = client.Get(apiPath);
 
-            if (response != null && response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response != null && response.StatusCode == HttpStatusCode.OK)
             {
                 data = JsonConvert.DeserializeObject<R>(response.Content);
             }

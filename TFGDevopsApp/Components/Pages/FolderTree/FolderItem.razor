@@ -331,7 +331,7 @@
             },
             EnumIssueType.ChangeSet,
             int.Parse(this.ChangeSetId)
-            
+
         );
 
         var response = await mantisServices.CreateTaskAsync(task, path);
@@ -371,12 +371,7 @@
             return;
         }
 
-        var request = new TaskProjectRequestDto()
-            {
-                Name = RepoName, //Asumismo que el nombre del proyecto en mantis es igual al nombre del repositorio.
-                Path = "projects"
-            };
-
+       
         //Creo una tara asociada en mantis.
         string path = "issues";
         var task = new TaskCreateRequestDto(new Issue
@@ -400,20 +395,58 @@
             int.Parse(ChangeSetId)
         );
 
-        var response = await mantisServices.CreateTaskAsync(task, path);
+        
 
-   
-        if (response != null && response.Success)
+        var newIssue = await mantisServices.CreateTaskAsync(task, path);
+
+        if (newIssue != null && newIssue.Success)
         {
-            var issue = response.Data?.Issue;
-       
+            var issue = newIssue.Data?.Issue;
+
             issueLink = $"https://mantis.tfg.es/view.php?id={issue?.Id}";
 
-            message = $"Tarea {issue?.Id} - {issue?.Summary} creada correctamente";
-          
+            message += $" Tarea {issue?.Id} - {issue?.Summary} creada correctamente";
+
         }
         else
-            message = $"Error al crear la tarea: {response?.Message}";
+            message += $"Error al crear la tarea: {newIssue?.Message}";
+
+     
+        var changeSetIssue = await mantisServices.GetIssueTrackingByChangeSetId(int.Parse(ChangeSetId));
+
+      
+        if (changeSetIssue != null && changeSetIssue.Success)
+        {
+            path += $"/{changeSetIssue.Data.IssueId}/relationships/";
+
+            //Asocio con la tarea de changeset.
+            var result = await mantisServices.PatchTaskAsync(new TaskPatchRequestDto()
+            {
+                ChangeSetId = int.Parse(ChangeSetId),
+                issue = new ParentIssue
+                {
+                    id = newIssue?.Data?.Issue.Id
+                },
+                type = new RelationShipType()
+                {
+                    name = "related-to"
+                },
+            },
+                path
+            );
+
+            if (result == null || !result.Success)
+            {
+                message = $"Error al asociar la tarea de revisión con la tarea de changeset : {result.Message}";
+            }
+        }
+        else
+        {
+            message = $"Error al obtener la tarea de changeset : {changeSetIssue.Message}";
+        }
+       
+   
+       
 
         loading = false;
     }

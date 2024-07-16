@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using TFGDevopsApp.Core.Helpers;
 using TFGDevopsApp.Core.Models.Result;
 using TFGDevopsApp.Dtos.Mantis.Category;
 using TFGDevopsApp.Dtos.Mantis.Issues;
@@ -8,7 +7,6 @@ using TFGDevopsApp.Interfaces;
 using TFGDevopsApp.Mediator.Command.Mantis;
 using TFGDevopsApp.Mediator.Queries.Mantis.Issues;
 using TFGDevopsApp.Mediator.Queries.Mantis.Project;
-using IssueDto = TFGDevopsApp.Dtos.Mantis.Issues;
 
 
 namespace TFGDevopsApp.Services
@@ -37,7 +35,7 @@ namespace TFGDevopsApp.Services
             }
         }
 
-        public async Task<Result<TaskResponseDto>> GetTaskById(string path, int id)
+        public async Task<Result<TaskResponseDto>> GetTaskByIdAsync(string path, int id)
         {
             var query = new GetTaskByIdQuery(path, id);
             var result = await _mediator.Send(query);
@@ -112,11 +110,26 @@ namespace TFGDevopsApp.Services
             }
         }
 
-        public async Task<Result<TaskResponseDto>> PatchTaskAsync(TaskPatchRequestDto request)
+        public async Task<Result<TaskTrackingResponseDto>> PatchTaskAsync(TaskPatchRequestDto request, string path)
         {
-            string path = $"api/rest/issues/{request.ParentIssueId}/relationships/";
-
+        
             var query = new PatchTaskCommand(request,path);
+            var result = await _mediator.Send(query);
+
+            if (result != null)
+            {
+                return await Task.FromResult(result);
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        public async Task<Result<IssueTrackingResponseDto>> GetIssueTrackingByChangeSetId(int changeSetId)
+        {
+          
+            var query = new GetIssueTrackingByChangeSetIdCommand(changeSetId);
             var result = await _mediator.Send(query);
 
             if (result != null)

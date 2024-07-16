@@ -4,7 +4,7 @@ using TFGDevopsApp.Dtos.Mantis.Issues;
 
 namespace TFGDevopsApp.Mediator.Command.Mantis
 {
-    public class PatchTaskCommand : IRequest<Result<TaskResponseDto>>
+    public class PatchTaskCommand : IRequest<Result<TaskTrackingResponseDto>>
     {
         public TaskPatchRequestDto TaskPatchRequest = new();
         public readonly string Path;
@@ -14,7 +14,7 @@ namespace TFGDevopsApp.Mediator.Command.Mantis
                                  string path)
                                 
         {
-            TaskPatchRequest.RelatedIssueId = request.RelatedIssueId;
+            TaskPatchRequest = request;
             Path = path;
             ChangeSetId = request.ChangeSetId;
         }

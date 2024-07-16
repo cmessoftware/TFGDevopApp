@@ -1,9 +1,8 @@
-﻿using TFGDevopsApp.Common.Enum;
-using TFGDevopsApp.Infraestructure.Entity;
+﻿using TFGDevopsApp.Core.Helpers;
 
-namespace TFGDevopsApp.Infraestructure.Entity.Mantis
+namespace TFGDevopsApp.Dtos.Mantis.Issues
 {
-    public class IssueTracking : BaseEntity
+    public class TaskTrackingResponseDto
     {
         public long? IssueId { get; set; }
 
@@ -28,8 +27,5 @@ namespace TFGDevopsApp.Infraestructure.Entity.Mantis
         public string? Reporter { get; set; }
 
         public string Category { get; set; }
-
-
-
     }
 }

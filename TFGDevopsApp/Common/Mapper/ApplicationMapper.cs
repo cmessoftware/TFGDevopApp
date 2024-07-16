@@ -2,6 +2,7 @@
 using AutoMapper;
 using TFGDevopsApp.Core.Helpers;
 using TFGDevopsApp.Dtos.FolderTree;
+using TFGDevopsApp.Dtos.Mantis.Issues;
 using TFGDevopsApp.Dtos.Plastic.Repositories;
 using TFGDevopsApp.Infraestructure.Entity.Mantis;
 
@@ -47,7 +48,10 @@ namespace TFGDevopsApp.Common.Mapper
                   }))
                 .ForMember(dest => dest.Summary, src => src.MapFrom(x => x.Summary))
                 .ForMember(dest => dest.Description, src => src.MapFrom(x => x.Description));
-             
+
+            CreateMap<IssueTracking, IssueTrackingResponseDto>().ReverseMap();
+                
+
         }
     }
 }
