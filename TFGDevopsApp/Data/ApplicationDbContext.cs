@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using TFGDevopsApp.Infraestructure.Entity.Mantis;
 using TFGDevopsApp.Infraestructure.Entity.Plastic;
 using TFGDevopsApp.Infraestructure.Entity.Project;
